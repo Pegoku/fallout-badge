@@ -2606,7 +2606,7 @@
 			(uuid "8ebae582-4738-416f-b104-46e3b593bb66")
 		)
 		(instances
-			(project "badgePCB"
+			(project "pegoku-badge-pcb"
 				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
 					(reference "#PWR06")
 					(unit 1)
@@ -2684,7 +2684,7 @@
 			(uuid "a1fb4dc5-e454-4946-b5b3-ccef637f61b6")
 		)
 		(instances
-			(project "badgePCB"
+			(project "pegoku-badge-pcb"
 				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
 					(reference "#PWR01")
 					(unit 1)
@@ -2800,7 +2800,7 @@
 			(uuid "c6fe4d00-1850-440e-9966-e674e323032c")
 		)
 		(instances
-			(project "badgePCB"
+			(project "pegoku-badge-pcb"
 				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
 					(reference "U1")
 					(unit 1)
@@ -2893,7 +2893,7 @@
 			(uuid "8a71202e-df99-42bc-acd2-1dc6bd4e3d18")
 		)
 		(instances
-			(project "badgePCB"
+			(project "pegoku-badge-pcb"
 				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
 					(reference "R2")
 					(unit 1)
@@ -2986,7 +2986,7 @@
 			(uuid "456b8f5d-47c0-480c-99b3-e9453b0d0ec4")
 		)
 		(instances
-			(project "badgePCB"
+			(project "pegoku-badge-pcb"
 				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
 					(reference "R6")
 					(unit 1)
@@ -3087,7 +3087,7 @@
 			(uuid "4b57d010-aacd-446a-8b84-9020863b2f02")
 		)
 		(instances
-			(project "badgePCB"
+			(project "pegoku-badge-pcb"
 				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
 					(reference "D1")
 					(unit 1)
@@ -3189,7 +3189,7 @@
 			(uuid "2d536532-78ec-4719-a3ea-735dc1c87b80")
 		)
 		(instances
-			(project "badgePCB"
+			(project "pegoku-badge-pcb"
 				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
 					(reference "D6")
 					(unit 1)
@@ -3308,7 +3308,7 @@
 			(uuid "7e55a788-b76a-417b-b7ee-85a168dfc753")
 		)
 		(instances
-			(project "badgePCB"
+			(project "pegoku-badge-pcb"
 				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
 					(reference "SW2")
 					(unit 1)
@@ -3427,7 +3427,7 @@
 			(uuid "3fd936a8-53b7-4f9f-a180-0057691b5a8f")
 		)
 		(instances
-			(project "badgePCB"
+			(project "pegoku-badge-pcb"
 				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
 					(reference "SW1")
 					(unit 1)
@@ -3520,7 +3520,7 @@
 			(uuid "08907f0a-32c9-423e-8fb1-63dd110f3612")
 		)
 		(instances
-			(project "badgePCB"
+			(project "pegoku-badge-pcb"
 				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
 					(reference "R8")
 					(unit 1)
@@ -3621,7 +3621,7 @@
 			(uuid "e9408b5c-9285-4bb4-9607-5a6f78644b32")
 		)
 		(instances
-			(project "badgePCB"
+			(project "pegoku-badge-pcb"
 				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
 					(reference "D10")
 					(unit 1)
@@ -3722,7 +3722,7 @@
 			(uuid "501013af-38d7-4825-8e4a-be819b53e920")
 		)
 		(instances
-			(project "badgePCB"
+			(project "pegoku-badge-pcb"
 				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
 					(reference "D4")
 					(unit 1)
@@ -3815,7 +3815,7 @@
 			(uuid "8c16509b-76f5-4fac-8db4-e38222dc2074")
 		)
 		(instances
-			(project "badgePCB"
+			(project "pegoku-badge-pcb"
 				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
 					(reference "R4")
 					(unit 1)
@@ -3916,7 +3916,7 @@
 			(uuid "ebbfbfba-584d-425e-8a55-d558188bfce2")
 		)
 		(instances
-			(project "badgePCB"
+			(project "pegoku-badge-pcb"
 				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
 					(reference "D14")
 					(unit 1)
@@ -4009,7 +4009,7 @@
 			(uuid "36389897-b790-45b7-ab06-fc98e7f6e1eb")
 		)
 		(instances
-			(project "badgePCB"
+			(project "pegoku-badge-pcb"
 				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
 					(reference "R9")
 					(unit 1)
@@ -4102,7 +4102,7 @@
 			(uuid "07a3e1a8-83c8-4e30-b88a-a66cf549925f")
 		)
 		(instances
-			(project "badgePCB"
+			(project "pegoku-badge-pcb"
 				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
 					(reference "R10")
 					(unit 1)
@@ -4221,7 +4221,7 @@
 			(uuid "62668fac-7b1f-44f2-9322-d53b4412bc98")
 		)
 		(instances
-			(project "badgePCB"
+			(project "pegoku-badge-pcb"
 				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
 					(reference "SW3")
 					(unit 1)
@@ -4322,7 +4322,7 @@
 			(uuid "f806b705-3260-4069-95a5-db485d5f7553")
 		)
 		(instances
-			(project "badgePCB"
+			(project "pegoku-badge-pcb"
 				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
 					(reference "D2")
 					(unit 1)
@@ -4400,7 +4400,7 @@
 			(uuid "8174b377-6a2a-4b0a-a025-bd2c19eb2293")
 		)
 		(instances
-			(project "badgePCB"
+			(project "pegoku-badge-pcb"
 				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
 					(reference "#PWR02")
 					(unit 1)
@@ -4501,7 +4501,7 @@
 			(uuid "2fb582ee-413d-4d5f-b5c3-199a98e36d69")
 		)
 		(instances
-			(project "badgePCB"
+			(project "pegoku-badge-pcb"
 				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
 					(reference "D3")
 					(unit 1)
@@ -4602,7 +4602,7 @@
 			(uuid "61ff06c9-193f-435c-a189-6ffc311d87da")
 		)
 		(instances
-			(project "badgePCB"
+			(project "pegoku-badge-pcb"
 				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
 					(reference "D7")
 					(unit 1)
@@ -4680,7 +4680,7 @@
 			(uuid "80b4e138-8c62-4699-8a55-a7a414b43c24")
 		)
 		(instances
-			(project "badgePCB"
+			(project "pegoku-badge-pcb"
 				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
 					(reference "#PWR04")
 					(unit 1)
@@ -4781,7 +4781,7 @@
 			(uuid "5b890075-a42c-4606-a37d-b423f62dc7a3")
 		)
 		(instances
-			(project "badgePCB"
+			(project "pegoku-badge-pcb"
 				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
 					(reference "D13")
 					(unit 1)
@@ -4882,7 +4882,7 @@
 			(uuid "55867f1b-d9a3-4106-b0f4-1c2a25361ca4")
 		)
 		(instances
-			(project "badgePCB"
+			(project "pegoku-badge-pcb"
 				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
 					(reference "D5")
 					(unit 1)
@@ -4960,7 +4960,7 @@
 			(uuid "ad7ea8ef-e3f8-4e7d-b5d4-46dbeb5c5be6")
 		)
 		(instances
-			(project "badgePCB"
+			(project "pegoku-badge-pcb"
 				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
 					(reference "#PWR05")
 					(unit 1)
@@ -5053,7 +5053,7 @@
 			(uuid "3f11e592-1014-4fb8-a3fe-e0d0bdcea42a")
 		)
 		(instances
-			(project "badgePCB"
+			(project "pegoku-badge-pcb"
 				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
 					(reference "R5")
 					(unit 1)
@@ -5146,7 +5146,7 @@
 			(uuid "71ee7604-005e-46a2-a41a-b8da3d22ca2f")
 		)
 		(instances
-			(project "badgePCB"
+			(project "pegoku-badge-pcb"
 				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
 					(reference "R7")
 					(unit 1)
@@ -5247,7 +5247,7 @@
 			(uuid "6af34c88-e8b1-40c4-8472-a227c22cc964")
 		)
 		(instances
-			(project "badgePCB"
+			(project "pegoku-badge-pcb"
 				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
 					(reference "D8")
 					(unit 1)
@@ -5348,7 +5348,7 @@
 			(uuid "f2a4ee6a-e1bd-48c8-92fb-2629dbdd42fa")
 		)
 		(instances
-			(project "badgePCB"
+			(project "pegoku-badge-pcb"
 				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
 					(reference "D12")
 					(unit 1)
@@ -5441,7 +5441,7 @@
 			(uuid "d3dd8f56-0827-461b-810c-cabbbfd26372")
 		)
 		(instances
-			(project "badgePCB"
+			(project "pegoku-badge-pcb"
 				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
 					(reference "R3")
 					(unit 1)
@@ -5519,7 +5519,7 @@
 			(uuid "a5069cd6-2ce8-4c54-9d32-1b5c7e634de6")
 		)
 		(instances
-			(project "badgePCB"
+			(project "pegoku-badge-pcb"
 				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
 					(reference "#PWR03")
 					(unit 1)
@@ -5612,7 +5612,7 @@
 			(uuid "3ea62b9c-95e1-4e45-9e92-821349a2e361")
 		)
 		(instances
-			(project "badgePCB"
+			(project "pegoku-badge-pcb"
 				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
 					(reference "R1")
 					(unit 1)
@@ -5714,7 +5714,7 @@
 			(uuid "4cd02fa3-f8b1-4be3-b399-e17d1a765503")
 		)
 		(instances
-			(project "badgePCB"
+			(project "pegoku-badge-pcb"
 				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
 					(reference "D9")
 					(unit 1)
@@ -5815,7 +5815,7 @@
 			(uuid "7bf8e8b9-cc82-4c1b-98f0-1bc595ab3a15")
 		)
 		(instances
-			(project "badgePCB"
+			(project "pegoku-badge-pcb"
 				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
 					(reference "D11")
 					(unit 1)

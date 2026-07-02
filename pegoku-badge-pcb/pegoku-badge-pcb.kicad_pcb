@@ -179,7 +179,7 @@
 		(property ki_fp_filters "LED* LED_SMD:* LED_THT:*")
 		(path "/269ee841-0da9-499c-9725-df0b149d6189")
 		(sheetname "/")
-		(sheetfile "badgePCB.kicad_sch")
+		(sheetfile "pegoku-badge-pcb.kicad_sch")
 		(units
 			(unit
 				(name "A")
@@ -386,7 +386,7 @@
 		(property ki_fp_filters "LED* LED_SMD:* LED_THT:*")
 		(path "/53590cec-85ac-4054-894f-56c08b42dacb")
 		(sheetname "/")
-		(sheetfile "badgePCB.kicad_sch")
+		(sheetfile "pegoku-badge-pcb.kicad_sch")
 		(units
 			(unit
 				(name "A")
@@ -580,7 +580,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/1a3803b1-21df-45ea-af1e-2e9d41ab9770")
 		(sheetname "/")
-		(sheetfile "badgePCB.kicad_sch")
+		(sheetfile "pegoku-badge-pcb.kicad_sch")
 		(units
 			(unit
 				(name "A")
@@ -767,7 +767,7 @@
 		(property ki_fp_filters "LED* LED_SMD:* LED_THT:*")
 		(path "/fecf1f73-a125-45fb-b5bc-b4144da463ab")
 		(sheetname "/")
-		(sheetfile "badgePCB.kicad_sch")
+		(sheetfile "pegoku-badge-pcb.kicad_sch")
 		(units
 			(unit
 				(name "A")
@@ -974,7 +974,7 @@
 		(property ki_fp_filters "LED* LED_SMD:* LED_THT:*")
 		(path "/a59b962b-f28f-4eb4-bace-4a817b32d346")
 		(sheetname "/")
-		(sheetfile "badgePCB.kicad_sch")
+		(sheetfile "pegoku-badge-pcb.kicad_sch")
 		(units
 			(unit
 				(name "A")
@@ -1181,7 +1181,7 @@
 		(property ki_fp_filters "LED* LED_SMD:* LED_THT:*")
 		(path "/6ca24ee0-042b-4973-8081-e81229695179")
 		(sheetname "/")
-		(sheetfile "badgePCB.kicad_sch")
+		(sheetfile "pegoku-badge-pcb.kicad_sch")
 		(units
 			(unit
 				(name "A")
@@ -1375,7 +1375,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/4cbb908e-499c-445a-bb1f-1effba989c62")
 		(sheetname "/")
-		(sheetfile "badgePCB.kicad_sch")
+		(sheetfile "pegoku-badge-pcb.kicad_sch")
 		(units
 			(unit
 				(name "A")
@@ -1549,7 +1549,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/b6248f23-a63f-47f7-aef6-bc311150a4c3")
 		(sheetname "/")
-		(sheetfile "badgePCB.kicad_sch")
+		(sheetfile "pegoku-badge-pcb.kicad_sch")
 		(units
 			(unit
 				(name "A")
@@ -1736,7 +1736,7 @@
 		(property ki_fp_filters "LED* LED_SMD:* LED_THT:*")
 		(path "/c9fbf48b-7471-48a3-adf4-724f1a153e20")
 		(sheetname "/")
-		(sheetfile "badgePCB.kicad_sch")
+		(sheetfile "pegoku-badge-pcb.kicad_sch")
 		(units
 			(unit
 				(name "A")
@@ -1943,7 +1943,7 @@
 		(property ki_fp_filters "LED* LED_SMD:* LED_THT:*")
 		(path "/d38c4c4f-578a-41bc-b1e6-9546946eabf7")
 		(sheetname "/")
-		(sheetfile "badgePCB.kicad_sch")
+		(sheetfile "pegoku-badge-pcb.kicad_sch")
 		(units
 			(unit
 				(name "A")
@@ -2137,7 +2137,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/ea561e59-5c38-4e2f-9783-3ee2f34f14d6")
 		(sheetname "/")
-		(sheetfile "badgePCB.kicad_sch")
+		(sheetfile "pegoku-badge-pcb.kicad_sch")
 		(units
 			(unit
 				(name "A")
@@ -2311,7 +2311,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/778463bb-4cd7-4d26-a96c-46a98c5e9516")
 		(sheetname "/")
-		(sheetfile "badgePCB.kicad_sch")
+		(sheetfile "pegoku-badge-pcb.kicad_sch")
 		(units
 			(unit
 				(name "A")
@@ -2498,7 +2498,7 @@
 		(property ki_fp_filters "LED* LED_SMD:* LED_THT:*")
 		(path "/feb5f7e1-666d-4b09-9a60-e8894d423538")
 		(sheetname "/")
-		(sheetfile "badgePCB.kicad_sch")
+		(sheetfile "pegoku-badge-pcb.kicad_sch")
 		(units
 			(unit
 				(name "A")
@@ -2705,7 +2705,7 @@
 		(property ki_fp_filters "LED* LED_SMD:* LED_THT:*")
 		(path "/ac614bea-e5a1-408f-973d-7db2a35e9202")
 		(sheetname "/")
-		(sheetfile "badgePCB.kicad_sch")
+		(sheetfile "pegoku-badge-pcb.kicad_sch")
 		(units
 			(unit
 				(name "A")
@@ -2909,7 +2909,7 @@
 		)
 		(path "/7b42a077-4231-437a-8619-4eddf367abfb")
 		(sheetname "/")
-		(sheetfile "badgePCB.kicad_sch")
+		(sheetfile "pegoku-badge-pcb.kicad_sch")
 		(units
 			(unit
 				(name "A")
@@ -3332,7 +3332,7 @@
 		(property ki_fp_filters "LED* LED_SMD:* LED_THT:*")
 		(path "/a3e1bbff-b61d-4da7-98b2-2d69c35c048a")
 		(sheetname "/")
-		(sheetfile "badgePCB.kicad_sch")
+		(sheetfile "pegoku-badge-pcb.kicad_sch")
 		(units
 			(unit
 				(name "A")
@@ -3526,7 +3526,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/67ff04a5-9bce-4a3f-bb3b-e13cc9b12664")
 		(sheetname "/")
-		(sheetfile "badgePCB.kicad_sch")
+		(sheetfile "pegoku-badge-pcb.kicad_sch")
 		(units
 			(unit
 				(name "A")
@@ -3713,7 +3713,7 @@
 		(property ki_fp_filters "LED* LED_SMD:* LED_THT:*")
 		(path "/638ce06d-53b0-4f55-82b6-49aa3bc621d5")
 		(sheetname "/")
-		(sheetfile "badgePCB.kicad_sch")
+		(sheetfile "pegoku-badge-pcb.kicad_sch")
 		(units
 			(unit
 				(name "A")
@@ -3920,7 +3920,7 @@
 		(property ki_fp_filters "LED* LED_SMD:* LED_THT:*")
 		(path "/7bf7937f-35e8-4f83-86be-9b1fc1a913d9")
 		(sheetname "/")
-		(sheetfile "badgePCB.kicad_sch")
+		(sheetfile "pegoku-badge-pcb.kicad_sch")
 		(units
 			(unit
 				(name "A")
@@ -4114,7 +4114,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/1c6aae19-5fff-4d9f-9e2d-71a96f04864f")
 		(sheetname "/")
-		(sheetfile "badgePCB.kicad_sch")
+		(sheetfile "pegoku-badge-pcb.kicad_sch")
 		(units
 			(unit
 				(name "A")
@@ -4288,7 +4288,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/fa89602c-86d9-4a74-a673-7cf8830451ab")
 		(sheetname "/")
-		(sheetfile "badgePCB.kicad_sch")
+		(sheetfile "pegoku-badge-pcb.kicad_sch")
 		(units
 			(unit
 				(name "A")
@@ -4475,7 +4475,7 @@
 		(property ki_fp_filters "LED* LED_SMD:* LED_THT:*")
 		(path "/b2e43e69-4b45-4b75-be44-5b87a1cedc99")
 		(sheetname "/")
-		(sheetfile "badgePCB.kicad_sch")
+		(sheetfile "pegoku-badge-pcb.kicad_sch")
 		(units
 			(unit
 				(name "A")
@@ -4682,7 +4682,7 @@
 		(property ki_fp_filters "LED* LED_SMD:* LED_THT:*")
 		(path "/31fc3a6b-df98-430a-bebd-eea89bc69f25")
 		(sheetname "/")
-		(sheetfile "badgePCB.kicad_sch")
+		(sheetfile "pegoku-badge-pcb.kicad_sch")
 		(units
 			(unit
 				(name "A")
@@ -4886,7 +4886,7 @@
 		)
 		(path "/479326fc-0c90-42d2-8400-35dfa560113b")
 		(sheetname "/")
-		(sheetfile "badgePCB.kicad_sch")
+		(sheetfile "pegoku-badge-pcb.kicad_sch")
 		(units
 			(unit
 				(name "A")
@@ -5296,7 +5296,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/b73a59fa-a046-4c63-b298-5943a684efcf")
 		(sheetname "/")
-		(sheetfile "badgePCB.kicad_sch")
+		(sheetfile "pegoku-badge-pcb.kicad_sch")
 		(units
 			(unit
 				(name "A")
@@ -5470,7 +5470,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/781c7eac-1e04-414a-a964-c6353d3a15ba")
 		(sheetname "/")
-		(sheetfile "badgePCB.kicad_sch")
+		(sheetfile "pegoku-badge-pcb.kicad_sch")
 		(units
 			(unit
 				(name "A")
@@ -5654,7 +5654,7 @@
 		)
 		(path "/38713164-1396-405d-86f2-be6e5cdc8edf")
 		(sheetname "/")
-		(sheetfile "badgePCB.kicad_sch")
+		(sheetfile "pegoku-badge-pcb.kicad_sch")
 		(units
 			(unit
 				(name "A")
@@ -6044,7 +6044,7 @@
 		)
 		(path "/16e9845f-2b81-44e9-bb35-a27c37a1a5ff")
 		(sheetname "/")
-		(sheetfile "badgePCB.kicad_sch")
+		(sheetfile "pegoku-badge-pcb.kicad_sch")
 		(units
 			(unit
 				(name "A")
@@ -14651,8 +14651,21 @@
 		(layer "Edge.Cuts")
 		(uuid "7173b3bf-21ea-4afc-9eb8-641d640bd721")
 	)
+	(gr_text "@Pegoku"
+		(at 63.85 52.775 -6)
+		(layer "F.SilkS")
+		(uuid "81e0baf6-c9b7-4c38-b03d-28ce51292727")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
 	(gr_text "P"
-		(at 62.102796 54.528659 0)
+		(at 62.3 54.675 -3.4)
 		(layer "F.SilkS")
 		(uuid "42050ed5-6e6e-4bfd-a86b-1e9298f698ff")
 		(effects
@@ -14664,7 +14677,7 @@
 		)
 	)
 	(gr_text "E"
-		(at 63.152796 54.928659 0)
+		(at 63.2 54.975 -3)
 		(layer "F.SilkS")
 		(uuid "bda8ea02-0bb4-4ad8-a123-53a772b1e9d9")
 		(effects
@@ -14676,7 +14689,7 @@
 		)
 	)
 	(gr_text "R"
-		(at 64.102796 55.128659 0)
+		(at 64.102796 55.128659 -2.5)
 		(layer "F.SilkS")
 		(uuid "6b99ad73-b74a-4a2f-9f95-56a663f08e8f")
 		(effects
@@ -14688,7 +14701,7 @@
 		)
 	)
 	(gr_text "E"
-		(at 65.152796 55.328659 0)
+		(at 65.15 55.35 -2)
 		(layer "F.SilkS")
 		(uuid "979228a5-ad5a-457c-b8a9-9a378b1f749b")
 		(effects

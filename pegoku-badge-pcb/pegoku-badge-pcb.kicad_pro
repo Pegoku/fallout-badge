@@ -488,7 +488,7 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "badgePCB.kicad_pro",
+    "filename": "pegoku-badge-pcb.kicad_pro",
     "version": 3
   },
   "net_settings": {
@@ -643,7 +643,7 @@
     "subpart_id_separator": 0,
     "top_level_sheets": [
       {
-        "filename": "badgePCB.kicad_sch",
+        "filename": "pegoku-badge-pcb.kicad_sch",
         "name": "Root",
         "uuid": "d73b17bd-b262-41f1-8e6d-ff0507febace"
       }
