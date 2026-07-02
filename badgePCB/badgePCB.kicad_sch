@@ -2008,30 +2008,6 @@
 		)
 		(uuid "f18f8d72-a7b7-43a4-a2aa-1bb62c838580")
 	)
-	(global_label "MID3"
-		(shape input)
-		(at 76.2 114.3 180)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "06d6b010-4097-418a-9966-12cc01a3eca7")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 68.6791 114.3 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-	)
 	(global_label "MID2"
 		(shape input)
 		(at 45.72 53.34 270)
@@ -2056,6 +2032,30 @@
 			)
 		)
 	)
+	(global_label "MID2"
+		(shape input)
+		(at 76.2 114.3 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "137b98f8-1ebd-49c9-89fe-9f557350eb75")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 68.6791 114.3 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+	)
 	(global_label "SID2"
 		(shape input)
 		(at 124.46 52.07 270)
@@ -2069,6 +2069,30 @@
 		(uuid "16629d9f-87d7-40fe-86d6-6e3ab18f8f18")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 124.46 59.349 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+	)
+	(global_label "MID1"
+		(shape input)
+		(at 76.2 110.49 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "19bf0f78-a511-4db9-90df-717789b14130")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 68.6791 110.49 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -2149,30 +2173,6 @@
 					(size 1.27 1.27)
 				)
 				(justify left)
-			)
-		)
-	)
-	(global_label "MID1"
-		(shape input)
-		(at 76.2 106.68 180)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "3fff6e7b-43c3-4aef-9cfa-83978e4c8113")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 68.6791 106.68 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
 			)
 		)
 	)
@@ -2296,6 +2296,30 @@
 			)
 		)
 	)
+	(global_label "MID3"
+		(shape input)
+		(at 76.2 106.68 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "95c68407-9f17-4a36-b53b-12149e120115")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 68.6791 106.68 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+	)
 	(global_label "Action"
 		(shape input)
 		(at 99.06 165.1 0)
@@ -2357,30 +2381,6 @@
 		(uuid "b63da95c-5b43-436a-8728-1906beab03ba")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 68.921 121.92 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-	)
-	(global_label "MID2"
-		(shape input)
-		(at 76.2 110.49 180)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "b65bc0c3-59af-4fdf-a5c4-f76af855c7ed")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 68.6791 110.49 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -3025,7 +3025,7 @@
 				)
 			)
 		)
-		(property "Footprint" "LED_SMD:LED_0805_2012Metric_Pad1.15x1.40mm_HandSolder"
+		(property "Footprint" "Extra:LED_0805_2012Metric_Pad1.15x1.40mm_HandSolder"
 			(at 38.1 40.64 0)
 			(hide yes)
 			(show_name no)
@@ -3127,7 +3127,7 @@
 				)
 			)
 		)
-		(property "Footprint" "LED_SMD:LED_0805_2012Metric_Pad1.15x1.40mm_HandSolder"
+		(property "Footprint" "Extra:LED_0805_2012Metric_Pad1.15x1.40mm_HandSolder"
 			(at 45.72 30.48 0)
 			(hide yes)
 			(show_name no)
@@ -3559,7 +3559,7 @@
 				)
 			)
 		)
-		(property "Footprint" "LED_SMD:LED_0805_2012Metric_Pad1.15x1.40mm_HandSolder"
+		(property "Footprint" "Extra:LED_0805_2012Metric_Pad1.15x1.40mm_HandSolder"
 			(at 124.46 34.29 0)
 			(hide yes)
 			(show_name no)
@@ -3660,7 +3660,7 @@
 				)
 			)
 		)
-		(property "Footprint" "LED_SMD:LED_0805_2012Metric_Pad1.15x1.40mm_HandSolder"
+		(property "Footprint" "Extra:LED_0805_2012Metric_Pad1.15x1.40mm_HandSolder"
 			(at 53.34 40.64 0)
 			(hide yes)
 			(show_name no)
@@ -3854,7 +3854,7 @@
 				)
 			)
 		)
-		(property "Footprint" "LED_SMD:LED_0805_2012Metric_Pad1.15x1.40mm_HandSolder"
+		(property "Footprint" "Extra:LED_0805_2012Metric_Pad1.15x1.40mm_HandSolder"
 			(at 25.4 82.55 0)
 			(hide yes)
 			(show_name no)
@@ -4260,7 +4260,7 @@
 				)
 			)
 		)
-		(property "Footprint" "LED_SMD:LED_0805_2012Metric_Pad1.15x1.40mm_HandSolder"
+		(property "Footprint" "Extra:LED_0805_2012Metric_Pad1.15x1.40mm_HandSolder"
 			(at 38.1 45.72 0)
 			(hide yes)
 			(show_name no)
@@ -4439,7 +4439,7 @@
 				)
 			)
 		)
-		(property "Footprint" "LED_SMD:LED_0805_2012Metric_Pad1.15x1.40mm_HandSolder"
+		(property "Footprint" "Extra:LED_0805_2012Metric_Pad1.15x1.40mm_HandSolder"
 			(at 45.72 35.56 0)
 			(hide yes)
 			(show_name no)
@@ -4540,7 +4540,7 @@
 				)
 			)
 		)
-		(property "Footprint" "LED_SMD:LED_0805_2012Metric_Pad1.15x1.40mm_HandSolder"
+		(property "Footprint" "Extra:LED_0805_2012Metric_Pad1.15x1.40mm_HandSolder"
 			(at 116.84 39.37 0)
 			(hide yes)
 			(show_name no)
@@ -4719,7 +4719,7 @@
 				)
 			)
 		)
-		(property "Footprint" "LED_SMD:LED_0805_2012Metric_Pad1.15x1.40mm_HandSolder"
+		(property "Footprint" "Extra:LED_0805_2012Metric_Pad1.15x1.40mm_HandSolder"
 			(at 44.45 82.55 0)
 			(hide yes)
 			(show_name no)
@@ -4820,7 +4820,7 @@
 				)
 			)
 		)
-		(property "Footprint" "LED_SMD:LED_0805_2012Metric_Pad1.15x1.40mm_HandSolder"
+		(property "Footprint" "Extra:LED_0805_2012Metric_Pad1.15x1.40mm_HandSolder"
 			(at 53.34 45.72 0)
 			(hide yes)
 			(show_name no)
@@ -5185,7 +5185,7 @@
 				)
 			)
 		)
-		(property "Footprint" "LED_SMD:LED_0805_2012Metric_Pad1.15x1.40mm_HandSolder"
+		(property "Footprint" "Extra:LED_0805_2012Metric_Pad1.15x1.40mm_HandSolder"
 			(at 116.84 44.45 0)
 			(hide yes)
 			(show_name no)
@@ -5286,7 +5286,7 @@
 				)
 			)
 		)
-		(property "Footprint" "LED_SMD:LED_0805_2012Metric_Pad1.15x1.40mm_HandSolder"
+		(property "Footprint" "Extra:LED_0805_2012Metric_Pad1.15x1.40mm_HandSolder"
 			(at 132.08 44.45 0)
 			(hide yes)
 			(show_name no)
@@ -5652,7 +5652,7 @@
 				)
 			)
 		)
-		(property "Footprint" "LED_SMD:LED_0805_2012Metric_Pad1.15x1.40mm_HandSolder"
+		(property "Footprint" "Extra:LED_0805_2012Metric_Pad1.15x1.40mm_HandSolder"
 			(at 124.46 29.21 0)
 			(hide yes)
 			(show_name no)
@@ -5753,7 +5753,7 @@
 				)
 			)
 		)
-		(property "Footprint" "LED_SMD:LED_0805_2012Metric_Pad1.15x1.40mm_HandSolder"
+		(property "Footprint" "Extra:LED_0805_2012Metric_Pad1.15x1.40mm_HandSolder"
 			(at 132.08 39.37 0)
 			(hide yes)
 			(show_name no)
