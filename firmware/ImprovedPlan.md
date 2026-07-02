@@ -404,11 +404,8 @@ Multi badge tests:
 ## Open Questions
 
 - Should the raw action-button duration be displayed only with SLED/RLED pulses, or should received durations be rendered as blink lengths on RLED?
-- Should active calls be strictly one-to-one, rejecting all other callers until the call ends?
-- Should manual ID conflicts be prevented at selection time or only detected when calls fail?
-- Should the final firmware use PlatformIO, native ESP-IDF, or both?
-- What exact LED order corresponds to bit positions 0 through 5 for each charlieplex group?
+- Should active calls be strictly one-to-one, rejecting all other callers until the call ends? - Yes, when on a call, it should put on hold all other calls, and if someone calls them some of the LEDs will do like a little dance (you're free to choose which ones may be used)
+- Should manual ID conflicts be prevented at selection time or only detected when calls fail? - Yes, when setting an ID it should try to avoid having multiple devices with the same ID
+- Should the final firmware use PlatformIO, native ESP-IDF, or both? What are the PROS/CONS of each?
+- What exact LED order corresponds to bit positions 0 through 5 for each charlieplex group? It should be selectable an order in an array, so I can set sth like myidleds[0,1,2,5,4,3] and it will set the order)
 
-## Recommended First Task
-
-Start with Phase 1 and Phase 2 only. Do not implement ESP-NOW or the full state machine until the LED order, button polarity, boot behavior, and UART LED side effects are validated on real hardware.
