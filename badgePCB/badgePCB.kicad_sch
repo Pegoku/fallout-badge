@@ -1470,6 +1470,14 @@
 		(color 0 0 0 0)
 		(uuid "ed4557f3-72d4-4c6d-88f1-4292aba436fb")
 	)
+	(no_connect
+		(at 114.3 106.68)
+		(uuid "787ef7f1-fa0b-46ff-b18c-a79985a58443")
+	)
+	(no_connect
+		(at 114.3 114.3)
+		(uuid "ddde3623-c763-45b1-958a-626cb73c4436")
+	)
 	(wire
 		(pts
 			(xy 120.65 31.75) (xy 120.65 34.29)
@@ -1789,6 +1797,26 @@
 			(type default)
 		)
 		(uuid "7e6d4bf3-522c-48ec-a7c4-cc573b5919f9")
+	)
+	(wire
+		(pts
+			(xy 25.4 104.14) (xy 25.4 101.6)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "833d67f2-7136-4a3a-802d-1b004981c6e5")
+	)
+	(wire
+		(pts
+			(xy 44.45 104.14) (xy 44.45 101.6)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "83b9ca10-8606-4455-b47c-d35c29093dcb")
 	)
 	(wire
 		(pts
@@ -2588,7 +2616,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 25.4 93.98 0)
+		(at 25.4 104.14 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -2599,7 +2627,7 @@
 		(fields_autoplaced yes)
 		(uuid "04c90056-36b6-4462-beb5-ea383e116f7c")
 		(property "Reference" "#PWR01"
-			(at 25.4 100.33 0)
+			(at 25.4 110.49 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -2610,7 +2638,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 25.4 99.06 0)
+			(at 25.4 109.22 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -2620,7 +2648,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 25.4 93.98 0)
+			(at 25.4 104.14 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -2631,7 +2659,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 25.4 93.98 0)
+			(at 25.4 104.14 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -2642,7 +2670,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 25.4 93.98 0)
+			(at 25.4 104.14 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -2696,7 +2724,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Module:MOUDLE14P-XIAO-DIP-SMD"
+		(property "Footprint" "XIAO:XIAO-ESP32C3-DIP"
 			(at 95.504 133.604 0)
 			(hide yes)
 			(show_name no)
@@ -2775,6 +2803,192 @@
 			(project "badgePCB"
 				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
 					(reference "U1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 27.94 49.53 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "1a3803b1-21df-45ea-af1e-2e9d41ab9770")
+		(property "Reference" "R2"
+			(at 30.48 48.2599 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "100R"
+			(at 30.48 50.7999 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder"
+			(at 26.162 49.53 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 27.94 49.53 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 27.94 49.53 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C22775"
+			(at 27.94 49.53 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "2"
+			(uuid "009aeba1-a41f-425f-bce7-0deb71f2bc5a")
+		)
+		(pin "1"
+			(uuid "8a71202e-df99-42bc-acd2-1dc6bd4e3d18")
+		)
+		(instances
+			(project "badgePCB"
+				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
+					(reference "R2")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 140.97 48.26 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "1c6aae19-5fff-4d9f-9e2d-71a96f04864f")
+		(property "Reference" "R6"
+			(at 143.51 46.9899 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "100R"
+			(at 143.51 49.5299 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder"
+			(at 139.192 48.26 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 140.97 48.26 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 140.97 48.26 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C22775"
+			(at 140.97 48.26 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "2"
+			(uuid "bbf2886b-06f8-4172-869e-ef59d4dde525")
+		)
+		(pin "1"
+			(uuid "456b8f5d-47c0-480c-99b3-e9453b0d0ec4")
+		)
+		(instances
+			(project "badgePCB"
+				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
+					(reference "R6")
 					(unit 1)
 				)
 			)
@@ -2876,88 +3090,6 @@
 			(project "badgePCB"
 				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
 					(reference "D1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:R")
-		(at 124.46 48.26 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "30506601-20c6-4eeb-ba35-563ae888aba3")
-		(property "Reference" "R5"
-			(at 127 46.9899 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "R"
-			(at 127 49.5299 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder"
-			(at 122.682 48.26 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 124.46 48.26 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Resistor"
-			(at 124.46 48.26 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "2"
-			(uuid "da73719d-9525-4879-bb42-e7e2a8215c71")
-		)
-		(pin "1"
-			(uuid "491a6b3a-b54f-421e-9591-d958bd534e3b")
-		)
-		(instances
-			(project "badgePCB"
-				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
-					(reference "R5")
 					(unit 1)
 				)
 			)
@@ -3185,88 +3317,6 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:R")
-		(at 62.23 49.53 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "3de78882-97c2-4a9f-bf23-2cbd97cedea5")
-		(property "Reference" "R2"
-			(at 64.77 48.2599 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "R"
-			(at 64.77 50.7999 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder"
-			(at 60.452 49.53 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 62.23 49.53 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Resistor"
-			(at 62.23 49.53 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "2"
-			(uuid "288ffa96-d76c-430c-9a83-5a02fc04e5d5")
-		)
-		(pin "1"
-			(uuid "88aec53f-000e-40eb-88f9-fe5d54f641df")
-		)
-		(instances
-			(project "badgePCB"
-				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
-					(reference "R2")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "easyeda2kicad:TS-1187A-B-A-B")
 		(at 43.18 167.64 0)
 		(unit 1)
@@ -3380,6 +3430,99 @@
 			(project "badgePCB"
 				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
 					(reference "SW1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 25.4 90.17 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "4cbb908e-499c-445a-bb1f-1effba989c62")
+		(property "Reference" "R8"
+			(at 27.94 88.8999 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "100R"
+			(at 27.94 91.4399 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder"
+			(at 23.622 90.17 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 25.4 90.17 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 25.4 90.17 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C22775"
+			(at 25.4 90.17 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "2"
+			(uuid "db21c488-c819-45e1-a88b-06871b0e6b0a")
+		)
+		(pin "1"
+			(uuid "08907f0a-32c9-423e-8fb1-63dd110f3612")
+		)
+		(instances
+			(project "badgePCB"
+				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
+					(reference "R8")
 					(unit 1)
 				)
 			)
@@ -3588,6 +3731,99 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:R")
+		(at 106.68 48.26 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "67ff04a5-9bce-4a3f-bb3b-e13cc9b12664")
+		(property "Reference" "R4"
+			(at 109.22 46.9899 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "100R"
+			(at 109.22 49.5299 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder"
+			(at 104.902 48.26 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 106.68 48.26 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 106.68 48.26 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C22775"
+			(at 106.68 48.26 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "2"
+			(uuid "982c45e0-572e-4658-a5c3-28dbe9fc3cc8")
+		)
+		(pin "1"
+			(uuid "8c16509b-76f5-4fac-8db4-e38222dc2074")
+		)
+		(instances
+			(project "badgePCB"
+				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
+					(reference "R4")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:LED")
 		(at 25.4 82.55 90)
 		(unit 1)
@@ -3690,7 +3926,7 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 44.45 90.17 180)
+		(at 25.4 97.79 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -3699,9 +3935,9 @@
 		(in_pos_files yes)
 		(dnp no)
 		(fields_autoplaced yes)
-		(uuid "70b41783-2931-4f0f-aa75-40c332876e2b")
-		(property "Reference" "R7"
-			(at 41.91 91.4401 0)
+		(uuid "778463bb-4cd7-4d26-a96c-46a98c5e9516")
+		(property "Reference" "R9"
+			(at 27.94 96.5199 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -3711,8 +3947,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "R"
-			(at 41.91 88.9001 0)
+		(property "Value" "100R"
+			(at 27.94 99.0599 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -3723,7 +3959,7 @@
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder"
-			(at 46.228 90.17 90)
+			(at 23.622 97.79 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -3734,7 +3970,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 44.45 90.17 0)
+			(at 25.4 97.79 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -3745,7 +3981,18 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 44.45 90.17 0)
+			(at 25.4 97.79 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C22775"
+			(at 25.4 97.79 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -3756,15 +4003,15 @@
 			)
 		)
 		(pin "2"
-			(uuid "96ca1ef7-099a-4f1c-813b-08866ab9cf06")
+			(uuid "d2437e29-af10-4a47-b1cf-3161709a581d")
 		)
 		(pin "1"
-			(uuid "b782d1b5-bbec-4890-b16a-f2aa6e457d45")
+			(uuid "36389897-b790-45b7-ab06-fc98e7f6e1eb")
 		)
 		(instances
 			(project "badgePCB"
 				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
-					(reference "R7")
+					(reference "R9")
 					(unit 1)
 				)
 			)
@@ -3772,7 +4019,7 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 106.68 48.26 0)
+		(at 44.45 97.79 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -3781,9 +4028,9 @@
 		(in_pos_files yes)
 		(dnp no)
 		(fields_autoplaced yes)
-		(uuid "75e9ccb4-c8e9-4b1c-aae5-f8bcd8e6db72")
-		(property "Reference" "R4"
-			(at 109.22 46.9899 0)
+		(uuid "781c7eac-1e04-414a-a964-c6353d3a15ba")
+		(property "Reference" "R10"
+			(at 46.99 96.5199 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -3793,8 +4040,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "R"
-			(at 109.22 49.5299 0)
+		(property "Value" "100R"
+			(at 46.99 99.0599 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -3805,7 +4052,7 @@
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder"
-			(at 104.902 48.26 90)
+			(at 42.672 97.79 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -3816,7 +4063,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 106.68 48.26 0)
+			(at 44.45 97.79 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -3827,7 +4074,18 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 106.68 48.26 0)
+			(at 44.45 97.79 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C22775"
+			(at 44.45 97.79 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -3838,97 +4096,15 @@
 			)
 		)
 		(pin "2"
-			(uuid "14710ea8-7207-4656-87ca-833373d7f429")
+			(uuid "9e2c858c-884a-4d23-9cea-852a5c3f2b1e")
 		)
 		(pin "1"
-			(uuid "395346ac-075d-4fd5-a526-06f654f59324")
+			(uuid "07a3e1a8-83c8-4e30-b88a-a66cf549925f")
 		)
 		(instances
 			(project "badgePCB"
 				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
-					(reference "R4")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:R")
-		(at 25.4 90.17 180)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "7a488bbc-06ab-46b6-941f-5d35a8b8e89f")
-		(property "Reference" "R8"
-			(at 22.86 91.4401 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "R"
-			(at 22.86 88.9001 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder"
-			(at 27.178 90.17 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 25.4 90.17 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Resistor"
-			(at 25.4 90.17 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "2"
-			(uuid "3cc499a5-e8a4-42a6-8085-ffa9ce0a036b")
-		)
-		(pin "1"
-			(uuid "674a1345-e2a4-4847-82d3-81a0b8f30483")
-		)
-		(instances
-			(project "badgePCB"
-				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
-					(reference "R8")
+					(reference "R10")
 					(unit 1)
 				)
 			)
@@ -4065,7 +4241,7 @@
 		(dnp no)
 		(uuid "7bf7937f-35e8-4f83-86be-9b1fc1a913d9")
 		(property "Reference" "D2"
-			(at 37.846 49.276 0)
+			(at 40.64 48.768 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -4075,7 +4251,7 @@
 			)
 		)
 		(property "Value" "LED"
-			(at 37.846 51.816 0)
+			(at 40.64 51.308 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -4156,7 +4332,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 44.45 93.98 0)
+		(at 44.45 104.14 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -4167,7 +4343,7 @@
 		(fields_autoplaced yes)
 		(uuid "82995f64-68ed-4496-a9e9-38d3c2325fcf")
 		(property "Reference" "#PWR02"
-			(at 44.45 100.33 0)
+			(at 44.45 110.49 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -4178,7 +4354,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 44.45 99.06 0)
+			(at 44.45 109.22 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -4188,7 +4364,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 44.45 93.98 0)
+			(at 44.45 104.14 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -4199,7 +4375,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 44.45 93.98 0)
+			(at 44.45 104.14 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -4210,7 +4386,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 44.45 93.98 0)
+			(at 44.45 104.14 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -4227,170 +4403,6 @@
 			(project "badgePCB"
 				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
 					(reference "#PWR02")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:R")
-		(at 27.94 49.53 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "89f6859c-0cba-4f89-9737-0d1ba69241e9")
-		(property "Reference" "R3"
-			(at 30.48 48.2599 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "R"
-			(at 30.48 50.7999 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder"
-			(at 26.162 49.53 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 27.94 49.53 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Resistor"
-			(at 27.94 49.53 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "2"
-			(uuid "1c27c416-dd58-40fd-a2b0-57ad49f9fbfb")
-		)
-		(pin "1"
-			(uuid "ed542886-f451-4f01-9f0f-ecbe2af75ab8")
-		)
-		(instances
-			(project "badgePCB"
-				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
-					(reference "R3")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:R")
-		(at 140.97 48.26 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "8d1dcde8-8114-4ffe-b49f-b3556b60ec32")
-		(property "Reference" "R6"
-			(at 143.51 46.9899 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "R"
-			(at 143.51 49.5299 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder"
-			(at 139.192 48.26 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 140.97 48.26 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Resistor"
-			(at 140.97 48.26 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "2"
-			(uuid "5c973f58-1f5d-4d6d-8c68-fccd4910f165")
-		)
-		(pin "1"
-			(uuid "1e282827-dcc6-402b-8d05-9f9e35e155da")
-		)
-		(instances
-			(project "badgePCB"
-				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
-					(reference "R6")
 					(unit 1)
 				)
 			)
@@ -4789,7 +4801,7 @@
 		(dnp no)
 		(uuid "b2e43e69-4b45-4b75-be44-5b87a1cedc99")
 		(property "Reference" "D5"
-			(at 53.34 49.022 0)
+			(at 56.388 48.26 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -4799,7 +4811,7 @@
 			)
 		)
 		(property "Value" "LED"
-			(at 53.34 51.562 0)
+			(at 56.388 50.8 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -4951,6 +4963,192 @@
 			(project "badgePCB"
 				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
 					(reference "#PWR05")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 124.46 48.26 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "b6248f23-a63f-47f7-aef6-bc311150a4c3")
+		(property "Reference" "R5"
+			(at 127 46.9899 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "100R"
+			(at 127 49.5299 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder"
+			(at 122.682 48.26 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 124.46 48.26 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 124.46 48.26 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C22775"
+			(at 124.46 48.26 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "2"
+			(uuid "426dce46-b92f-4151-a2ee-c327866c9347")
+		)
+		(pin "1"
+			(uuid "3f11e592-1014-4fb8-a3fe-e0d0bdcea42a")
+		)
+		(instances
+			(project "badgePCB"
+				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
+					(reference "R5")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 44.45 90.17 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "b73a59fa-a046-4c63-b298-5943a684efcf")
+		(property "Reference" "R7"
+			(at 46.99 88.8999 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "100R"
+			(at 46.99 91.4399 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder"
+			(at 42.672 90.17 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 44.45 90.17 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 44.45 90.17 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C22775"
+			(at 44.45 90.17 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "2"
+			(uuid "2685707d-d25c-4caa-82dd-32cfb6dbf368")
+		)
+		(pin "1"
+			(uuid "71ee7604-005e-46a2-a41a-b8da3d22ca2f")
+		)
+		(instances
+			(project "badgePCB"
+				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
+					(reference "R7")
 					(unit 1)
 				)
 			)
@@ -5159,6 +5357,99 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:R")
+		(at 62.23 49.53 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "ea561e59-5c38-4e2f-9783-3ee2f34f14d6")
+		(property "Reference" "R3"
+			(at 64.77 48.2599 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "100R"
+			(at 64.77 50.7999 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder"
+			(at 60.452 49.53 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 62.23 49.53 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 62.23 49.53 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C22775"
+			(at 62.23 49.53 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "2"
+			(uuid "c5051904-966c-405b-ad53-5dab2978fb7e")
+		)
+		(pin "1"
+			(uuid "d3dd8f56-0827-461b-810c-cabbbfd26372")
+		)
+		(instances
+			(project "badgePCB"
+				(path "/d73b17bd-b262-41f1-8e6d-ff0507febace"
+					(reference "R3")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:GND")
 		(at 38.1 172.72 0)
 		(unit 1)
@@ -5259,7 +5550,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "R"
+		(property "Value" "100R"
 			(at 48.26 50.7999 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5293,6 +5584,17 @@
 			)
 		)
 		(property "Description" "Resistor"
+			(at 45.72 49.53 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part" "C22775"
 			(at 45.72 49.53 0)
 			(hide yes)
 			(show_name no)
