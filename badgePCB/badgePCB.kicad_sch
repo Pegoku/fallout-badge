@@ -2724,7 +2724,7 @@
 				)
 			)
 		)
-		(property "Footprint" "XIAO:XIAO-ESP32C3-DIP"
+		(property "Footprint" "XIAO:XIAO-ESP32C3-SMD"
 			(at 95.504 133.604 0)
 			(hide yes)
 			(show_name no)
