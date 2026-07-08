@@ -67,6 +67,10 @@ Default board:
 ESP32-C3 mini:       5V GND 3.3V 10 9 8 7 6 5 4 3 2 1 0
 ```
 
+For the default XIAO ESP32-C3 schematic, the ID LEDs and buttons use the
+working `GPIO10..GPIO2` mapping, while the two discrete indicators are wired
+separately as `RLED=GPIO21` and `SLED=GPIO20`.
+
 Alternative board:
 
 ```text
@@ -91,14 +95,14 @@ The default can also be changed in `sdkconfig.defaults`.
 Logical signal order across the 11 GPIO positions:
 
 ```text
-Action IDDown IDUp SLED RLED SID3 SID2 SID1 MID2 MID1 MID3
+Action IDDown IDUp SID3 SID2 SID1 MID2 MID1 MID3 RLED SLED
 ```
 
 ## Hardware Bring-Up Notes
 
 - Buttons are currently configured as active-low with internal pull-ups.
 - Some selected GPIOs are boot strapping sensitive depending on the board. Test reset behavior while holding each button.
-- UART-labelled pins may be used for badge signals depending on the selected pinout, so serial logging should stay on USB Serial/JTAG rather than UART.
+- The default XIAO ESP32-C3 schematic puts RLED/SLED on GPIO21/GPIO20. These are UART-labelled pins, so serial logging should stay on USB Serial/JTAG rather than UART.
 - Charlieplex LED 0 is the rightmost LED.
 - The measured My ID scan appeared as `4 3 2 5 1 0`, so My ID defaults to order `{1, 0, 2, 5, 4, 3}` to display visible LED order `0 1 2 3 4 5`.
 - The measured Call ID scan appeared as `4 5 0 1 2 3`, so Call ID defaults to order `{4, 5, 2, 3, 0, 1}` to display visible LED order `0 1 2 3 4 5`.

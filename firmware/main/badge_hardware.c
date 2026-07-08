@@ -11,7 +11,11 @@
  *   P0 P1 P2 P3 P4 P5 P6 P7 P8 P9 P10
  *
  * Badge net order on those positions:
- *   Action IDDown IDUp SLED RLED SID3 SID2 SID1 MID2 MID1 MID3
+ *   Action IDDown IDUp SID3 SID2 SID1 MID2 MID1 MID3 RLED SLED
+ *
+ * The default XIAO ESP32-C3 footprint uses GPIO20/GPIO21 for the two
+ * discrete indicators. Those pins are labelled RX/TX, but the firmware keeps
+ * console logging on USB Serial/JTAG so they can be used as normal GPIOs.
  */
 
 #if CONFIG_BADGE_BOARD_PINOUT_C3_SUPER_MINI
@@ -39,22 +43,32 @@
 #define BADGE_GPIO_P8 GPIO_NUM_2
 #define BADGE_GPIO_P9 GPIO_NUM_1
 #define BADGE_GPIO_P10 GPIO_NUM_0
+#define BADGE_GPIO_RLED GPIO_NUM_21
+#define BADGE_GPIO_SLED GPIO_NUM_20
 #define BADGE_PINOUT_NAME "ESP32-C3 mini"
+#endif
+
+#ifndef BADGE_GPIO_RLED
+#define BADGE_GPIO_RLED BADGE_GPIO_P9
+#endif
+
+#ifndef BADGE_GPIO_SLED
+#define BADGE_GPIO_SLED BADGE_GPIO_P10
 #endif
 
 const badge_pin_map_t BADGE_PINS = {
     .my_id = {
-        BADGE_GPIO_P9,  /* MID1 */
-        BADGE_GPIO_P8,  /* MID2 */
-        BADGE_GPIO_P10, /* MID3 */
+        BADGE_GPIO_P7, /* MID1 */
+        BADGE_GPIO_P6, /* MID2 */
+        BADGE_GPIO_P8, /* MID3 */
     },
     .send_id = {
-        BADGE_GPIO_P7, /* SID1 */
-        BADGE_GPIO_P6, /* SID2 */
-        BADGE_GPIO_P5, /* SID3 */
+        BADGE_GPIO_P5, /* SID1 */
+        BADGE_GPIO_P4, /* SID2 */
+        BADGE_GPIO_P3, /* SID3 */
     },
-    .receive_led = BADGE_GPIO_P4,  /* RLED */
-    .send_led = BADGE_GPIO_P3,     /* SLED */
+    .receive_led = BADGE_GPIO_RLED,
+    .send_led = BADGE_GPIO_SLED,
     .button_up = BADGE_GPIO_P2,    /* IDUp */
     .button_down = BADGE_GPIO_P1,  /* IDDown */
     .button_action = BADGE_GPIO_P0,

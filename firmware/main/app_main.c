@@ -10,8 +10,8 @@
 
 static const char *TAG = "fallout_badge";
 
-#define DIAGNOSTIC_STEP_MS 350U
-#define DIAGNOSTIC_STEP_COUNT 22U
+#define DIAGNOSTIC_STEP_MS 700U
+#define DIAGNOSTIC_STEP_COUNT 24U
 
 static TickType_t delay_ticks_at_least_one(uint32_t ms)
 {
@@ -23,10 +23,12 @@ static void set_diagnostic_step(uint8_t step)
 {
     badge_display_set_my_id(0, false);
     badge_display_set_target_id(0, false);
-    badge_display_set_send_led(false);
-    badge_display_set_receive_led(false);
     badge_display_set_send_led_raw(false, false);
     badge_display_set_receive_led_raw(false, false);
+    badge_display_set_send_led(false);
+    badge_display_set_receive_led(false);
+    badge_display_set_send_led_high_z(true);
+    badge_display_set_receive_led_high_z(true);
 
     if (step < BADGE_ID_LED_COUNT) {
         ESP_LOGI(TAG, "LED test: my_id[%u]", (unsigned)step);
@@ -59,44 +61,62 @@ static void set_diagnostic_step(uint8_t step)
     }
 
     if (step == 15) {
-        ESP_LOGI(TAG, "LED test: SLED high");
-        badge_display_set_send_led(true);
+        ESP_LOGI(TAG, "LED test: SLED GPIO%u drive HIGH",
+                 (unsigned)BADGE_PINS.send_led);
+        badge_display_set_send_led_raw(true, true);
         return;
     }
 
     if (step == 16) {
-        ESP_LOGI(TAG, "LED test: RLED high");
-        badge_display_set_receive_led(true);
-        return;
-    }
-
-    if (step == 17) {
-        ESP_LOGI(TAG, "LED test: SLED + RLED high");
-        badge_display_set_send_led(true);
-        badge_display_set_receive_led(true);
-        return;
-    }
-
-    if (step == 18) {
-        ESP_LOGI(TAG, "LED test: SLED low");
+        ESP_LOGI(TAG, "LED test: SLED GPIO%u drive LOW",
+                 (unsigned)BADGE_PINS.send_led);
         badge_display_set_send_led_raw(true, false);
         return;
     }
 
+    if (step == 17) {
+        ESP_LOGI(TAG, "LED test: SLED GPIO%u high-Z",
+                 (unsigned)BADGE_PINS.send_led);
+        return;
+    }
+
+    if (step == 18) {
+        ESP_LOGI(TAG, "LED test: RLED GPIO%u drive HIGH",
+                 (unsigned)BADGE_PINS.receive_led);
+        badge_display_set_receive_led_raw(true, true);
+        return;
+    }
+
     if (step == 19) {
-        ESP_LOGI(TAG, "LED test: RLED low");
+        ESP_LOGI(TAG, "LED test: RLED GPIO%u drive LOW",
+                 (unsigned)BADGE_PINS.receive_led);
         badge_display_set_receive_led_raw(true, false);
         return;
     }
 
     if (step == 20) {
-        ESP_LOGI(TAG, "LED test: SLED + RLED low");
+        ESP_LOGI(TAG, "LED test: RLED GPIO%u high-Z",
+                 (unsigned)BADGE_PINS.receive_led);
+        return;
+    }
+
+    if (step == 21) {
+        ESP_LOGI(TAG, "LED test: SLED GPIO%u + RLED GPIO%u drive HIGH",
+                 (unsigned)BADGE_PINS.send_led, (unsigned)BADGE_PINS.receive_led);
+        badge_display_set_send_led_raw(true, true);
+        badge_display_set_receive_led_raw(true, true);
+        return;
+    }
+
+    if (step == 22) {
+        ESP_LOGI(TAG, "LED test: SLED GPIO%u + RLED GPIO%u drive LOW",
+                 (unsigned)BADGE_PINS.send_led, (unsigned)BADGE_PINS.receive_led);
         badge_display_set_send_led_raw(true, false);
         badge_display_set_receive_led_raw(true, false);
         return;
     }
 
-    ESP_LOGI(TAG, "LED test: indicators high-Z/off");
+    ESP_LOGI(TAG, "LED test: SLED/RLED high-Z");
 }
 
 void app_main(void)
@@ -106,6 +126,15 @@ void app_main(void)
 
     ESP_LOGI(TAG, "Fallout badge firmware bring-up");
     ESP_LOGI(TAG, "Using pinout: %s", badge_hardware_pinout_name());
+    ESP_LOGI(TAG,
+             "GPIO map: MID={%u,%u,%u} SID={%u,%u,%u} SLED=%u RLED=%u "
+             "buttons={up:%u,down:%u,action:%u}",
+             (unsigned)BADGE_PINS.my_id[0], (unsigned)BADGE_PINS.my_id[1],
+             (unsigned)BADGE_PINS.my_id[2], (unsigned)BADGE_PINS.send_id[0],
+             (unsigned)BADGE_PINS.send_id[1], (unsigned)BADGE_PINS.send_id[2],
+             (unsigned)BADGE_PINS.send_led, (unsigned)BADGE_PINS.receive_led,
+             (unsigned)BADGE_PINS.button_up, (unsigned)BADGE_PINS.button_down,
+             (unsigned)BADGE_PINS.button_action);
     ESP_LOGI(TAG, "Phase 2 diagnostics: all LEDs cycle; buttons log events");
 
     uint8_t diagnostic_step = 0;

@@ -23,6 +23,8 @@ void badge_display_set_send_led(bool enabled);
 void badge_display_set_receive_led(bool enabled);
 void badge_display_set_send_led_raw(bool enabled, bool level);
 void badge_display_set_receive_led_raw(bool enabled, bool level);
+void badge_display_set_send_led_high_z(bool enabled);
+void badge_display_set_receive_led_high_z(bool enabled);
 void badge_display_pulse_send(void);
 void badge_display_pulse_receive(void);
 void badge_display_play_busy_dance(void);

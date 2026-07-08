@@ -35,6 +35,10 @@ Default:
 ESP32-C3 mini:       5V GND 3.3V 10 9 8 7 6 5 4 3 2 1 0
 ```
 
+For the default XIAO ESP32-C3 schematic, the ID LEDs and buttons use the
+working `GPIO10..GPIO2` mapping, while the two discrete indicators are wired
+separately as `RLED=GPIO21` and `SLED=GPIO20`.
+
 Alternative:
 
 ```text
@@ -96,9 +100,10 @@ Exit the monitor with `Ctrl+]`.
 After flashing:
 
 - The firmware logs the selected pinout at boot.
+- The firmware logs the concrete GPIO map used for LEDs and buttons.
 - My ID LEDs are tested one at a time, then all at once.
 - Call ID LEDs are tested one at a time, then all at once.
-- SLED and RLED are tested individually and together with both high-drive and low-drive phases.
+- SLED and RLED are tested individually and together as drive-high, drive-low, and high-Z phases.
 - Pressing `Action` pulses SLED.
 - Pressing `IDUp` or `IDDown` pulses RLED.
 - Button press, release, short, long, and `IDUp + IDDown` chord events are logged.
@@ -107,7 +112,7 @@ After flashing:
 
 - Buttons are configured as active-low with internal pull-ups.
 - Some GPIOs are boot strapping pins depending on the selected board. Test reset behavior while holding each button.
-- UART-labelled XIAO pins may be used as badge signals, so console logging is configured for USB Serial/JTAG instead of UART.
+- The default XIAO ESP32-C3 schematic puts RLED/SLED on GPIO21/GPIO20. These are UART-labelled pins, so console logging is configured for USB Serial/JTAG instead of UART.
 - Charlieplex LED 0 is the rightmost LED.
 - The measured My ID scan appeared as `4 3 2 5 1 0`, so My ID defaults to order `{1, 0, 2, 5, 4, 3}` in `main/badge_display.c`.
 - The measured Call ID scan appeared as `4 5 0 1 2 3`, so Call ID defaults to order `{4, 5, 2, 3, 0, 1}` in `main/badge_display.c`.
