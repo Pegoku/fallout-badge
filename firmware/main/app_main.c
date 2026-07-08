@@ -34,6 +34,9 @@ static const char *TAG = "fallout_badge";
 #define RELIABLE_RETRY_MS 90U
 #define RELIABLE_MAX_ATTEMPTS 6U
 
+#define SYMBOL_QUEUE_COUNT 16U
+#define SYMBOL_GAP_MS 160U
+
 typedef enum {
     APP_MODE_MY_ID_INPUT = 0,
     APP_MODE_ID_PROBE_WAIT,
@@ -52,6 +55,11 @@ typedef struct {
 } reliable_packet_t;
 
 typedef struct {
+    badge_packet_type_t type;
+    uint16_t duration_ms;
+} queued_symbol_t;
+
+typedef struct {
     app_mode_t mode;
     uint8_t my_id;
     uint8_t selected_my_id;
@@ -64,6 +72,7 @@ typedef struct {
     bool action_pressed;
     bool call_alert_on;
     bool input_repeat_active;
+    bool queued_symbol_waiting_ack;
     badge_button_id_t input_repeat_button;
     uint8_t input_repeat_count;
     uint32_t mode_started_ms;
@@ -73,17 +82,24 @@ typedef struct {
     uint32_t call_deadline_ms;
     uint32_t action_press_started_ms;
     uint32_t send_symbol_until_ms;
+    uint32_t next_symbol_start_ms;
     uint32_t receive_raw_until_ms;
     uint32_t last_alert_toggle_ms;
     uint32_t next_input_repeat_ms;
     uint16_t last_packet_seq_by_id[64];
     uint16_t last_call_input_seq_by_id[64];
     reliable_packet_t reliable_packets[RELIABLE_PACKET_COUNT];
+    uint16_t queued_symbol_seq;
+    queued_symbol_t symbol_queue[SYMBOL_QUEUE_COUNT];
+    uint8_t symbol_queue_head;
+    uint8_t symbol_queue_tail;
+    uint8_t symbol_queue_count;
 } app_state_t;
 
 static app_state_t s_app;
 
 static void refresh_call_activity(uint32_t now);
+static uint16_t call_input_symbol_duration(badge_packet_type_t type);
 
 static TickType_t delay_ticks_at_least_one(uint32_t ms)
 {
@@ -159,6 +175,49 @@ static void clear_reliable_packets(void)
     for (uint8_t i = 0; i < RELIABLE_PACKET_COUNT; i++) {
         s_app.reliable_packets[i].active = false;
     }
+}
+
+static void clear_symbol_queue(void)
+{
+    s_app.symbol_queue_head = 0;
+    s_app.symbol_queue_tail = 0;
+    s_app.symbol_queue_count = 0;
+    s_app.next_symbol_start_ms = 0;
+    s_app.queued_symbol_waiting_ack = false;
+    s_app.queued_symbol_seq = 0;
+}
+
+static bool enqueue_symbol(badge_packet_type_t type)
+{
+    if (s_app.symbol_queue_count >= SYMBOL_QUEUE_COUNT) {
+        ESP_LOGW(TAG, "symbol queue full, dropping %s",
+                 badge_packet_type_name(type));
+        return false;
+    }
+
+    queued_symbol_t *slot = &s_app.symbol_queue[s_app.symbol_queue_tail];
+    slot->type = type;
+    slot->duration_ms = call_input_symbol_duration(type);
+    s_app.symbol_queue_tail =
+        (uint8_t)((s_app.symbol_queue_tail + 1U) % SYMBOL_QUEUE_COUNT);
+    s_app.symbol_queue_count++;
+
+    ESP_LOGI(TAG, "queued %s count=%u", badge_packet_type_name(type),
+             (unsigned)s_app.symbol_queue_count);
+    return true;
+}
+
+static bool dequeue_symbol(queued_symbol_t *symbol)
+{
+    if (symbol == NULL || s_app.symbol_queue_count == 0U) {
+        return false;
+    }
+
+    *symbol = s_app.symbol_queue[s_app.symbol_queue_head];
+    s_app.symbol_queue_head =
+        (uint8_t)((s_app.symbol_queue_head + 1U) % SYMBOL_QUEUE_COUNT);
+    s_app.symbol_queue_count--;
+    return true;
 }
 
 static void show_selected_my_id(void)
@@ -243,6 +302,7 @@ static void enter_mode(app_mode_t mode, uint32_t now)
         s_app.send_symbol_until_ms = 0;
         s_app.receive_raw_until_ms = 0;
         clear_reliable_packets();
+        clear_symbol_queue();
     }
 
     switch (mode) {
@@ -364,6 +424,11 @@ static reliable_packet_t *alloc_reliable_slot(void)
 
     ESP_LOGW(TAG, "reliable queue full, replacing seq=%u",
              (unsigned)oldest->packet.seq);
+    if (s_app.queued_symbol_waiting_ack &&
+        s_app.queued_symbol_seq == oldest->packet.seq) {
+        s_app.queued_symbol_waiting_ack = false;
+        s_app.queued_symbol_seq = 0;
+    }
     return oldest;
 }
 
@@ -418,13 +483,18 @@ static esp_err_t send_reliable_packet(badge_packet_t *packet, bool pulse_indicat
 
 static void send_reliable_input(uint8_t dst_id, badge_packet_type_t type,
                                 uint8_t arg, uint16_t duration_ms,
-                                bool pulse_indicator)
+                                bool pulse_indicator, uint16_t *seq_out)
 {
     badge_packet_t packet;
     esp_err_t err = badge_comms_make_packet(s_app.my_id, dst_id, type, arg,
                                             duration_ms, &packet);
     if (err == ESP_OK) {
         (void)send_reliable_packet(&packet, pulse_indicator);
+        if (seq_out != NULL) {
+            *seq_out = packet.seq;
+        }
+    } else if (seq_out != NULL) {
+        *seq_out = 0;
     }
 }
 
@@ -448,6 +518,11 @@ static void handle_ack(const badge_packet_t *packet)
                      (unsigned)packet->src_id, (unsigned)slot->packet.seq,
                      badge_packet_type_name(slot->packet.type),
                      (unsigned)slot->attempts);
+            if (s_app.queued_symbol_waiting_ack &&
+                s_app.queued_symbol_seq == slot->packet.seq) {
+                s_app.queued_symbol_waiting_ack = false;
+                s_app.queued_symbol_seq = 0;
+            }
             slot->active = false;
             return;
         }
@@ -789,7 +864,7 @@ static void handle_button_event(const badge_button_event_t *event, uint32_t now)
                 badge_display_set_send_led(true);
                 send_reliable_input(s_app.active_peer_id,
                                     BADGE_PACKET_CALL_INPUT_RAW,
-                                    CALL_INPUT_RAW_ARG_START, 0, false);
+                                    CALL_INPUT_RAW_ARG_START, 0, false, NULL);
             } else if (event->type == BADGE_BUTTON_EVENT_RELEASE &&
                        s_app.action_pressed) {
                 uint32_t duration = event->duration_ms;
@@ -805,26 +880,16 @@ static void handle_button_event(const badge_button_event_t *event, uint32_t now)
                 send_reliable_input(s_app.active_peer_id,
                                     BADGE_PACKET_CALL_INPUT_RAW,
                                     CALL_INPUT_RAW_ARG_STOP, (uint16_t)duration,
-                                    false);
+                                    false, NULL);
             }
         } else if (event->type == BADGE_BUTTON_EVENT_SHORT &&
                    event->button == BADGE_BUTTON_DOWN) {
-            const uint16_t duration =
-                call_input_symbol_duration(BADGE_PACKET_CALL_INPUT_SHORT);
             refresh_call_activity(now);
-            show_send_symbol(now, duration);
-            send_reliable_input(s_app.active_peer_id,
-                                BADGE_PACKET_CALL_INPUT_SHORT, 0, duration,
-                                false);
+            (void)enqueue_symbol(BADGE_PACKET_CALL_INPUT_SHORT);
         } else if (event->type == BADGE_BUTTON_EVENT_SHORT &&
                    event->button == BADGE_BUTTON_UP) {
-            const uint16_t duration =
-                call_input_symbol_duration(BADGE_PACKET_CALL_INPUT_LONG);
             refresh_call_activity(now);
-            show_send_symbol(now, duration);
-            send_reliable_input(s_app.active_peer_id,
-                                BADGE_PACKET_CALL_INPUT_LONG, 0, duration,
-                                false);
+            (void)enqueue_symbol(BADGE_PACKET_CALL_INPUT_LONG);
         }
         break;
 
@@ -877,6 +942,7 @@ static void update_timeouts(uint32_t now)
     if (s_app.send_symbol_until_ms != 0U &&
         deadline_reached(now, s_app.send_symbol_until_ms)) {
         s_app.send_symbol_until_ms = 0;
+        s_app.next_symbol_start_ms = now + SYMBOL_GAP_MS;
         if (!s_app.action_pressed && !s_app.call_alert_on) {
             badge_display_set_send_led(false);
         }
@@ -935,6 +1001,11 @@ static void update_reliable_retries(uint32_t now)
             ESP_LOGW(TAG, "reliable packet dropped: type=%s dst=%u seq=%u",
                      badge_packet_type_name(slot->packet.type),
                      (unsigned)slot->packet.dst_id, (unsigned)slot->packet.seq);
+            if (s_app.queued_symbol_waiting_ack &&
+                s_app.queued_symbol_seq == slot->packet.seq) {
+                s_app.queued_symbol_waiting_ack = false;
+                s_app.queued_symbol_seq = 0;
+            }
             slot->active = false;
             continue;
         }
@@ -954,6 +1025,40 @@ static void update_reliable_retries(uint32_t now)
             slot->next_retry_ms = now + RELIABLE_RETRY_MS;
         }
     }
+}
+
+static void update_symbol_queue(uint32_t now)
+{
+    if (s_app.mode != APP_MODE_CALL_ACTIVE ||
+        s_app.action_pressed ||
+        s_app.queued_symbol_waiting_ack ||
+        s_app.send_symbol_until_ms != 0U ||
+        s_app.symbol_queue_count == 0U) {
+        return;
+    }
+
+    if (s_app.next_symbol_start_ms != 0U &&
+        !deadline_reached(now, s_app.next_symbol_start_ms)) {
+        return;
+    }
+
+    queued_symbol_t symbol;
+    if (!dequeue_symbol(&symbol)) {
+        return;
+    }
+
+    refresh_call_activity(now);
+    show_send_symbol(now, symbol.duration_ms);
+    uint16_t seq = 0;
+    send_reliable_input(s_app.active_peer_id, symbol.type, 0,
+                        symbol.duration_ms, false, &seq);
+    if (seq != 0U) {
+        s_app.queued_symbol_waiting_ack = true;
+        s_app.queued_symbol_seq = seq;
+    }
+    ESP_LOGI(TAG, "sent queued %s seq=%u remaining=%u",
+             badge_packet_type_name(symbol.type), (unsigned)seq,
+             (unsigned)s_app.symbol_queue_count);
 }
 
 void app_main(void)
@@ -1007,6 +1112,7 @@ void app_main(void)
         update_alerts(now);
         update_input_repeat(now);
         update_reliable_retries(now);
+        update_symbol_queue(now);
 
         vTaskDelay(delay_ticks_at_least_one(MAIN_LOOP_MS));
     }
