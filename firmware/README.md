@@ -45,6 +45,13 @@ Alternative:
 ESP32-C3 Super Mini: 5V GND 3.3V 4 3 2 1 20 10 9 8 7 6 5
 ```
 
+The Super Mini option applies this XIAO-to-Super-Mini signal remap:
+
+```text
+XIAO GPIO:        2 3 4 5 6 7 21 20 10 9 8
+Super Mini GPIO: 5 6 7 8 9 10 20 1  4  3 2
+```
+
 To change the selected board:
 
 ```sh
