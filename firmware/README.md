@@ -2,9 +2,9 @@
 
 Firmware for the ESP32-C3 Fallout badge.
 
-Current firmware status: hardware bring-up. It scans the My ID and Send ID
-charlieplex LED groups, pulses SLED/RLED on button events, and logs button
-presses over USB Serial/JTAG.
+Current firmware status: hardware bring-up. It cycles every LED group,
+pulses SLED/RLED on button events, and logs button presses over USB
+Serial/JTAG.
 
 ## Requirements
 
@@ -96,8 +96,9 @@ Exit the monitor with `Ctrl+]`.
 After flashing:
 
 - The firmware logs the selected pinout at boot.
-- My ID LEDs run a one-hot scan pattern.
-- Send ID LEDs show the inverse test pattern.
+- My ID LEDs are tested one at a time, then all at once.
+- Call ID LEDs are tested one at a time, then all at once.
+- SLED and RLED are tested individually, then together.
 - Pressing `Action` pulses SLED.
 - Pressing `IDUp` or `IDDown` pulses RLED.
 - Button press, release, short, long, and `IDUp + IDDown` chord events are logged.
