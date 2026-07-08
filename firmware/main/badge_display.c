@@ -20,7 +20,7 @@ typedef struct {
 } charlie_group_state_t;
 
 static charlie_group_state_t s_my_id = {
-    .order = {4, 5, 2, 3, 0, 1},
+    .order = {1, 0, 2, 5, 4, 3},
 };
 
 static charlie_group_state_t s_send_id = {
@@ -33,6 +33,10 @@ static uint32_t s_receive_pulse_ticks;
 static esp_timer_handle_t s_refresh_timer;
 static bool s_send_led_forced;
 static bool s_receive_led_forced;
+static bool s_send_led_raw_enabled;
+static bool s_send_led_raw_level;
+static bool s_receive_led_raw_enabled;
+static bool s_receive_led_raw_level;
 
 static const uint8_t CHARLIE_DRIVE[BADGE_ID_LED_COUNT][2] = {
     {0, 1},
@@ -156,12 +160,32 @@ void badge_display_set_target_id(uint8_t id, bool blink)
 
 void badge_display_set_send_led(bool enabled)
 {
+    s_send_led_raw_enabled = false;
     s_send_led_forced = enabled;
 }
 
 void badge_display_set_receive_led(bool enabled)
 {
+    s_receive_led_raw_enabled = false;
     s_receive_led_forced = enabled;
+}
+
+void badge_display_set_send_led_raw(bool enabled, bool level)
+{
+    s_send_led_raw_enabled = enabled;
+    s_send_led_raw_level = level;
+    if (!enabled) {
+        s_send_led_forced = false;
+    }
+}
+
+void badge_display_set_receive_led_raw(bool enabled, bool level)
+{
+    s_receive_led_raw_enabled = enabled;
+    s_receive_led_raw_level = level;
+    if (!enabled) {
+        s_receive_led_forced = false;
+    }
 }
 
 void badge_display_pulse_send(void)
@@ -210,7 +234,9 @@ void badge_display_tick(void)
     render_group(BADGE_PINS.my_id, &s_my_id, scan_slot);
     render_group(BADGE_PINS.send_id, &s_send_id, scan_slot);
 
-    if (s_send_led_forced || s_send_pulse_ticks > 0) {
+    if (s_send_led_raw_enabled) {
+        gpio_set_level(BADGE_PINS.send_led, s_send_led_raw_level ? 1 : 0);
+    } else if (s_send_led_forced || s_send_pulse_ticks > 0) {
         gpio_set_level(BADGE_PINS.send_led, 1);
         if (s_send_pulse_ticks > 0) {
             s_send_pulse_ticks--;
@@ -219,7 +245,9 @@ void badge_display_tick(void)
         gpio_set_level(BADGE_PINS.send_led, 0);
     }
 
-    if (s_receive_led_forced || s_receive_pulse_ticks > 0) {
+    if (s_receive_led_raw_enabled) {
+        gpio_set_level(BADGE_PINS.receive_led, s_receive_led_raw_level ? 1 : 0);
+    } else if (s_receive_led_forced || s_receive_pulse_ticks > 0) {
         gpio_set_level(BADGE_PINS.receive_led, 1);
         if (s_receive_pulse_ticks > 0) {
             s_receive_pulse_ticks--;

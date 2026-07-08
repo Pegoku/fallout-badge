@@ -100,4 +100,5 @@ Action IDDown IDUp SID3 SID2 SID1 MID2 MID1 MID3 RLED SLED
 - Some selected GPIOs are boot strapping sensitive depending on the board. Test reset behavior while holding each button.
 - UART-labelled pins may be used for badge signals depending on the selected pinout, so serial logging should stay on USB Serial/JTAG rather than UART.
 - Charlieplex LED 0 is the rightmost LED.
-- The measured Call ID scan appeared as `4 5 0 1 2 3`, so both LED groups default to order `{4, 5, 2, 3, 0, 1}` to display visible LED order `0 1 2 3 4 5`.
+- The measured My ID scan appeared as `4 3 2 5 1 0`, so My ID defaults to order `{1, 0, 2, 5, 4, 3}` to display visible LED order `0 1 2 3 4 5`.
+- The measured Call ID scan appeared as `4 5 0 1 2 3`, so Call ID defaults to order `{4, 5, 2, 3, 0, 1}` to display visible LED order `0 1 2 3 4 5`.

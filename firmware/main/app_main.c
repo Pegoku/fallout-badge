@@ -11,7 +11,7 @@
 static const char *TAG = "fallout_badge";
 
 #define DIAGNOSTIC_STEP_MS 350U
-#define DIAGNOSTIC_STEP_COUNT 18U
+#define DIAGNOSTIC_STEP_COUNT 22U
 
 static TickType_t delay_ticks_at_least_one(uint32_t ms)
 {
@@ -25,6 +25,8 @@ static void set_diagnostic_step(uint8_t step)
     badge_display_set_target_id(0, false);
     badge_display_set_send_led(false);
     badge_display_set_receive_led(false);
+    badge_display_set_send_led_raw(false, false);
+    badge_display_set_receive_led_raw(false, false);
 
     if (step < BADGE_ID_LED_COUNT) {
         ESP_LOGI(TAG, "LED test: my_id[%u]", (unsigned)step);
@@ -57,20 +59,44 @@ static void set_diagnostic_step(uint8_t step)
     }
 
     if (step == 15) {
-        ESP_LOGI(TAG, "LED test: SLED");
+        ESP_LOGI(TAG, "LED test: SLED high");
         badge_display_set_send_led(true);
         return;
     }
 
     if (step == 16) {
-        ESP_LOGI(TAG, "LED test: RLED");
+        ESP_LOGI(TAG, "LED test: RLED high");
         badge_display_set_receive_led(true);
         return;
     }
 
-    ESP_LOGI(TAG, "LED test: SLED + RLED");
-    badge_display_set_send_led(true);
-    badge_display_set_receive_led(true);
+    if (step == 17) {
+        ESP_LOGI(TAG, "LED test: SLED + RLED high");
+        badge_display_set_send_led(true);
+        badge_display_set_receive_led(true);
+        return;
+    }
+
+    if (step == 18) {
+        ESP_LOGI(TAG, "LED test: SLED low");
+        badge_display_set_send_led_raw(true, false);
+        return;
+    }
+
+    if (step == 19) {
+        ESP_LOGI(TAG, "LED test: RLED low");
+        badge_display_set_receive_led_raw(true, false);
+        return;
+    }
+
+    if (step == 20) {
+        ESP_LOGI(TAG, "LED test: SLED + RLED low");
+        badge_display_set_send_led_raw(true, false);
+        badge_display_set_receive_led_raw(true, false);
+        return;
+    }
+
+    ESP_LOGI(TAG, "LED test: indicators high-Z/off");
 }
 
 void app_main(void)
