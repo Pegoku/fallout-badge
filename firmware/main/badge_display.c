@@ -6,6 +6,7 @@
 #include "driver/gpio.h"
 #include "esp_check.h"
 #include "esp_log.h"
+#include "esp_timer.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
@@ -29,6 +30,7 @@ static charlie_group_state_t s_send_id = {
 static uint32_t s_tick_count;
 static uint32_t s_send_pulse_ticks;
 static uint32_t s_receive_pulse_ticks;
+static esp_timer_handle_t s_refresh_timer;
 
 static const uint8_t CHARLIE_DRIVE[BADGE_ID_LED_COUNT][2] = {
     {0, 1},
@@ -77,6 +79,12 @@ static void drive_charlie_led(const gpio_num_t pins[3], uint8_t physical_led)
     configure_output(pins[low_pin], 0);
 }
 
+static void refresh_timer_callback(void *arg)
+{
+    (void)arg;
+    badge_display_tick();
+}
+
 static void render_group(const gpio_num_t pins[3], const charlie_group_state_t *state,
                          uint8_t scan_slot)
 {
@@ -119,6 +127,16 @@ esp_err_t badge_display_init(void)
 
     badge_display_set_send_led(false);
     badge_display_set_receive_led(false);
+
+    const esp_timer_create_args_t timer_args = {
+        .callback = refresh_timer_callback,
+        .name = "display_refresh",
+    };
+    ESP_RETURN_ON_ERROR(esp_timer_create(&timer_args, &s_refresh_timer), TAG,
+                        "display refresh timer create failed");
+    ESP_RETURN_ON_ERROR(esp_timer_start_periodic(s_refresh_timer, 1000), TAG,
+                        "display refresh timer start failed");
+
     return ESP_OK;
 }
 
@@ -160,7 +178,6 @@ void badge_display_play_busy_dance(void)
     for (uint8_t i = 0; i < BADGE_ID_LED_COUNT; i++) {
         badge_display_set_target_id((uint8_t)(1U << i), false);
         for (uint8_t j = 0; j < 10; j++) {
-            badge_display_tick();
             vTaskDelay(delay_ticks_at_least_one(10));
         }
     }

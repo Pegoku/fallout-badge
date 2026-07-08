@@ -62,7 +62,6 @@ void app_main(void)
             badge_display_set_target_id((uint8_t)(0x3fU ^ test_value), false);
         }
 
-        badge_display_tick();
         vTaskDelay(delay_ticks_at_least_one(10));
     }
 }
