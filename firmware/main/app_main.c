@@ -10,6 +10,12 @@
 
 static const char *TAG = "fallout_badge";
 
+static TickType_t delay_ticks_at_least_one(uint32_t ms)
+{
+    const TickType_t ticks = pdMS_TO_TICKS(ms);
+    return ticks > 0 ? ticks : 1;
+}
+
 void app_main(void)
 {
     ESP_ERROR_CHECK(badge_display_init());
@@ -57,6 +63,6 @@ void app_main(void)
         }
 
         badge_display_tick();
-        vTaskDelay(pdMS_TO_TICKS(5));
+        vTaskDelay(delay_ticks_at_least_one(10));
     }
 }

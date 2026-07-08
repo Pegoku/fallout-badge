@@ -39,6 +39,12 @@ static const uint8_t CHARLIE_DRIVE[BADGE_ID_LED_COUNT][2] = {
     {2, 1},
 };
 
+static TickType_t delay_ticks_at_least_one(uint32_t ms)
+{
+    const TickType_t ticks = pdMS_TO_TICKS(ms);
+    return ticks > 0 ? ticks : 1;
+}
+
 static void configure_output(gpio_num_t pin, int level)
 {
     gpio_reset_pin(pin);
@@ -155,7 +161,7 @@ void badge_display_play_busy_dance(void)
         badge_display_set_target_id((uint8_t)(1U << i), false);
         for (uint8_t j = 0; j < 10; j++) {
             badge_display_tick();
-            vTaskDelay(pdMS_TO_TICKS(5));
+            vTaskDelay(delay_ticks_at_least_one(10));
         }
     }
 }
