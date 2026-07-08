@@ -30,7 +30,7 @@ static const char *TAG = "fallout_badge";
 #define CALL_INPUT_RAW_ARG_START 1U
 #define CALL_INPUT_RAW_ARG_STOP 2U
 
-#define RELIABLE_PACKET_COUNT 6U
+#define RELIABLE_PACKET_COUNT 12U
 #define RELIABLE_RETRY_MS 90U
 #define RELIABLE_MAX_ATTEMPTS 6U
 
@@ -87,7 +87,6 @@ typedef struct {
     uint32_t last_alert_toggle_ms;
     uint32_t next_input_repeat_ms;
     uint16_t last_packet_seq_by_id[64];
-    uint16_t last_call_input_seq_by_id[64];
     reliable_packet_t reliable_packets[RELIABLE_PACKET_COUNT];
     uint16_t queued_symbol_seq;
     queued_symbol_t symbol_queue[SYMBOL_QUEUE_COUNT];
@@ -100,6 +99,7 @@ static app_state_t s_app;
 
 static void refresh_call_activity(uint32_t now);
 static uint16_t call_input_symbol_duration(badge_packet_type_t type);
+static esp_err_t send_reliable_packet(badge_packet_t *packet, bool pulse_indicator);
 
 static TickType_t delay_ticks_at_least_one(uint32_t ms)
 {
@@ -168,13 +168,6 @@ static void stop_input_repeat(void)
 {
     s_app.input_repeat_active = false;
     s_app.input_repeat_count = 0;
-}
-
-static void clear_reliable_packets(void)
-{
-    for (uint8_t i = 0; i < RELIABLE_PACKET_COUNT; i++) {
-        s_app.reliable_packets[i].active = false;
-    }
 }
 
 static void clear_symbol_queue(void)
@@ -301,7 +294,6 @@ static void enter_mode(app_mode_t mode, uint32_t now)
     if (mode != APP_MODE_CALL_ACTIVE) {
         s_app.send_symbol_until_ms = 0;
         s_app.receive_raw_until_ms = 0;
-        clear_reliable_packets();
         clear_symbol_queue();
     }
 
@@ -340,7 +332,6 @@ static void enter_mode(app_mode_t mode, uint32_t now)
         break;
     case APP_MODE_CALL_ACTIVE:
         refresh_call_activity(now);
-        s_app.last_call_input_seq_by_id[s_app.active_peer_id] = 0;
         badge_display_set_my_id(s_app.my_id, false);
         badge_display_set_target_id(s_app.active_peer_id, false);
         badge_display_set_send_led(false);
@@ -359,6 +350,20 @@ static void enter_mode(app_mode_t mode, uint32_t now)
 
 static void send_control(uint8_t dst_id, badge_packet_type_t type, uint8_t arg)
 {
+    if (dst_id != BADGE_BROADCAST_ID && type != BADGE_PACKET_ACK) {
+        badge_packet_t packet;
+        esp_err_t err = badge_comms_make_packet(s_app.my_id, dst_id, type, arg,
+                                                0, &packet);
+        if (err == ESP_OK) {
+            err = send_reliable_packet(&packet, true);
+        }
+        if (err != ESP_OK) {
+            ESP_LOGW(TAG, "tx reliable control failed %s dst=%u",
+                     badge_packet_type_name(type), (unsigned)dst_id);
+        }
+        return;
+    }
+
     if (badge_comms_send_control(s_app.my_id, dst_id, type, arg) == ESP_OK) {
         badge_display_pulse_send();
         ESP_LOGI(TAG, "tx %s dst=%u arg=%u", badge_packet_type_name(type),
@@ -401,11 +406,11 @@ static void show_receive_symbol(uint32_t now, uint16_t duration_ms)
     badge_display_set_receive_led(true);
 }
 
-static bool packet_needs_ack(badge_packet_type_t type)
+static bool packet_requires_ack(const badge_packet_t *packet)
 {
-    return type == BADGE_PACKET_CALL_INPUT_RAW ||
-           type == BADGE_PACKET_CALL_INPUT_SHORT ||
-           type == BADGE_PACKET_CALL_INPUT_LONG;
+    return packet != NULL &&
+           packet->type != BADGE_PACKET_ACK &&
+           packet->dst_id != BADGE_BROADCAST_ID;
 }
 
 static reliable_packet_t *alloc_reliable_slot(void)
@@ -529,21 +534,6 @@ static void handle_ack(const badge_packet_t *packet)
     }
 }
 
-static bool call_input_is_duplicate(const badge_packet_t *packet)
-{
-    if (!packet_needs_ack((badge_packet_type_t)packet->type) ||
-        packet->src_id > 63U) {
-        return false;
-    }
-
-    if (s_app.last_call_input_seq_by_id[packet->src_id] == packet->seq) {
-        return true;
-    }
-
-    s_app.last_call_input_seq_by_id[packet->src_id] = packet->seq;
-    return false;
-}
-
 static bool packet_is_duplicate(const badge_packet_t *packet)
 {
     if (packet->src_id == 0U || packet->src_id > 63U) {
@@ -608,8 +598,11 @@ static void handle_packet(const badge_packet_t *packet, uint32_t now)
         return;
     }
 
-    if (!packet_needs_ack((badge_packet_type_t)packet->type) &&
-        packet_is_duplicate(packet)) {
+    if (packet_requires_ack(packet)) {
+        send_ack(packet);
+    }
+
+    if (packet_is_duplicate(packet)) {
         return;
     }
 
@@ -703,10 +696,6 @@ static void handle_packet(const badge_packet_t *packet, uint32_t now)
     case BADGE_PACKET_CALL_INPUT_RAW:
         if (s_app.mode == APP_MODE_CALL_ACTIVE &&
             packet->src_id == s_app.active_peer_id) {
-            send_ack(packet);
-            if (call_input_is_duplicate(packet)) {
-                break;
-            }
             refresh_call_activity(now);
             if (packet->arg == CALL_INPUT_RAW_ARG_START) {
                 s_app.receive_raw_until_ms = 0;
@@ -728,10 +717,6 @@ static void handle_packet(const badge_packet_t *packet, uint32_t now)
     case BADGE_PACKET_CALL_INPUT_LONG:
         if (s_app.mode == APP_MODE_CALL_ACTIVE &&
             packet->src_id == s_app.active_peer_id) {
-            send_ack(packet);
-            if (call_input_is_duplicate(packet)) {
-                break;
-            }
             uint16_t duration = packet->duration_ms;
             if (duration == 0U) {
                 duration = call_input_symbol_duration(

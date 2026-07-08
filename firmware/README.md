@@ -122,7 +122,7 @@ Controls:
 - Active call: short-press `IDDown` sends a short visible symbol.
 - Active call: short-press `IDUp` sends a long visible symbol.
 - Active call: short/long symbols are queued and sent sequentially with a short gap between pulses.
-- Active-call input packets are acknowledged and retried if the ACK is missed.
+- Directed packets are acknowledged and retried if the ACK is missed, including call requests, call responses, call end, and active-call inputs. Broadcast discovery packets remain best-effort.
 
 Display behavior:
 
