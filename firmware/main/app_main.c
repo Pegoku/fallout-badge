@@ -26,6 +26,10 @@ static const char *TAG = "fallout_badge";
 #define CALL_INPUT_SHORT_MS 220U
 #define CALL_INPUT_LONG_MS 650U
 
+#define CALL_INPUT_RAW_ARG_DURATION 0U
+#define CALL_INPUT_RAW_ARG_START 1U
+#define CALL_INPUT_RAW_ARG_STOP 2U
+
 typedef enum {
     APP_MODE_MY_ID_INPUT = 0,
     APP_MODE_ID_PROBE_WAIT,
@@ -328,6 +332,24 @@ static void send_realtime(uint8_t dst_id, badge_packet_type_t type,
     }
 }
 
+static void send_realtime_arg(uint8_t dst_id, badge_packet_type_t type,
+                              uint8_t arg, uint16_t duration_ms,
+                              bool pulse_indicator)
+{
+    if (badge_comms_send(s_app.my_id, dst_id, type, arg, duration_ms) == ESP_OK) {
+        if (pulse_indicator) {
+            badge_display_pulse_send();
+        }
+        refresh_call_activity(now_ms());
+        ESP_LOGI(TAG, "tx %s dst=%u arg=%u duration=%u",
+                 badge_packet_type_name(type), (unsigned)dst_id, (unsigned)arg,
+                 (unsigned)duration_ms);
+    } else {
+        ESP_LOGW(TAG, "tx failed %s dst=%u", badge_packet_type_name(type),
+                 (unsigned)dst_id);
+    }
+}
+
 static void start_id_probe(uint8_t candidate_id, bool auto_assigning, uint32_t now)
 {
     s_app.probe_candidate_id = candidate_id;
@@ -463,12 +485,20 @@ static void handle_packet(const badge_packet_t *packet, uint32_t now)
     case BADGE_PACKET_CALL_INPUT_RAW:
         if (s_app.mode == APP_MODE_CALL_ACTIVE &&
             packet->src_id == s_app.active_peer_id) {
-            uint32_t duration = packet->duration_ms;
-            if (duration > RAW_DURATION_MAX_MS) {
-                duration = RAW_DURATION_MAX_MS;
-            }
             refresh_call_activity(now);
-            show_receive_symbol(now, (uint16_t)duration);
+            if (packet->arg == CALL_INPUT_RAW_ARG_START) {
+                s_app.receive_raw_until_ms = 0;
+                badge_display_set_receive_led(true);
+            } else if (packet->arg == CALL_INPUT_RAW_ARG_STOP) {
+                s_app.receive_raw_until_ms = 0;
+                badge_display_set_receive_led(false);
+            } else {
+                uint32_t duration = packet->duration_ms;
+                if (duration > RAW_DURATION_MAX_MS) {
+                    duration = RAW_DURATION_MAX_MS;
+                }
+                show_receive_symbol(now, (uint16_t)duration);
+            }
         }
         break;
 
@@ -606,6 +636,8 @@ static void handle_button_event(const badge_button_event_t *event, uint32_t now)
                 s_app.action_press_started_ms = now;
                 refresh_call_activity(now);
                 badge_display_set_send_led(true);
+                send_realtime_arg(s_app.active_peer_id, BADGE_PACKET_CALL_INPUT_RAW,
+                                  CALL_INPUT_RAW_ARG_START, 0, false);
             } else if (event->type == BADGE_BUTTON_EVENT_RELEASE &&
                        s_app.action_pressed) {
                 uint32_t duration = event->duration_ms;
@@ -615,8 +647,9 @@ static void handle_button_event(const badge_button_event_t *event, uint32_t now)
                 s_app.action_pressed = false;
                 badge_display_set_send_led(false);
                 refresh_call_activity(now);
-                send_realtime(s_app.active_peer_id, BADGE_PACKET_CALL_INPUT_RAW,
-                              (uint16_t)duration);
+                send_realtime_arg(s_app.active_peer_id, BADGE_PACKET_CALL_INPUT_RAW,
+                                  CALL_INPUT_RAW_ARG_STOP, (uint16_t)duration,
+                                  false);
             }
         } else if (event->type == BADGE_BUTTON_EVENT_SHORT &&
                    event->button == BADGE_BUTTON_DOWN) {

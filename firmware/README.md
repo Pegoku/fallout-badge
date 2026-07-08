@@ -118,7 +118,7 @@ Controls:
 - Incoming call: short-press `Action` accepts.
 - Incoming call: long-press `Action` rejects.
 - Outgoing wait or active call: hold `IDUp + IDDown` for 3 seconds to end/cancel.
-- Active call: press/release `Action` sends a raw duration input.
+- Active call: holding `Action` live-streams the raw input; SLED turns on while pressed and the receiver's RLED mirrors it until release.
 - Active call: short-press `IDDown` sends a short visible symbol.
 - Active call: short-press `IDUp` sends a long visible symbol.
 
