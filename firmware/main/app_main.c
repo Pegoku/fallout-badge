@@ -2,6 +2,7 @@
 
 #include "badge_buttons.h"
 #include "badge_display.h"
+#include "badge_hardware.h"
 #include "esp_log.h"
 #include "esp_timer.h"
 #include "freertos/FreeRTOS.h"
@@ -15,6 +16,7 @@ void app_main(void)
     ESP_ERROR_CHECK(badge_buttons_init());
 
     ESP_LOGI(TAG, "Fallout badge firmware bring-up");
+    ESP_LOGI(TAG, "Using pinout: %s", badge_hardware_pinout_name());
     ESP_LOGI(TAG, "Phase 2 diagnostics: LEDs scan; buttons log events");
 
     uint8_t test_value = 1;

@@ -1,0 +1,24 @@
+menu "Fallout Badge"
+
+choice BADGE_BOARD_PINOUT
+    prompt "ESP32-C3 devboard pinout"
+    default BADGE_BOARD_PINOUT_C3_MINI
+    help
+        Select the ESP32-C3 mini devboard pinout mounted on the same physical
+        connector footprint. The GPIO order starts after 5V, GND, and 3.3V.
+
+config BADGE_BOARD_PINOUT_C3_MINI
+    bool "ESP32-C3 mini: 10 9 8 7 6 5 4 3 2 1 0"
+    help
+        GPIO order by physical connector position:
+        5V GND 3.3V 10 9 8 7 6 5 4 3 2 1 0
+
+config BADGE_BOARD_PINOUT_C3_SUPER_MINI
+    bool "ESP32-C3 Super Mini: 4 3 2 1 20 10 9 8 7 6 5"
+    help
+        GPIO order by physical connector position:
+        5V GND 3.3V 4 3 2 1 20 10 9 8 7 6 5
+
+endchoice
+
+endmenu

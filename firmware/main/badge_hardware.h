@@ -18,6 +18,8 @@ typedef struct {
 
 extern const badge_pin_map_t BADGE_PINS;
 
+const char *badge_hardware_pinout_name(void);
+
 #ifdef __cplusplus
 }
 #endif

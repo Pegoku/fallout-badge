@@ -7,7 +7,7 @@ Started Phase 1 and Phase 2 from `ImprovedPlan.md`.
 Implemented:
 
 - Native ESP-IDF project scaffold.
-- ESP32-C3/XIAO GPIO pin map from the PCB.
+- ESP32-C3 devboard pin map toggle for the two supported mini-board pinouts.
 - Initial charlieplex display driver for My ID and Send ID LEDs.
 - Configurable logical-to-physical LED order arrays.
 - Fixed SLED/RLED control and pulse helpers.
@@ -56,9 +56,47 @@ idf.py build
 idf.py flash monitor
 ```
 
+## Board Pinout Selection
+
+The badge maps logical signals by physical connector position. Both supported
+boards use the same positions, but the GPIO labels differ.
+
+Default board:
+
+```text
+ESP32-C3 mini:       5V GND 3.3V 10 9 8 7 6 5 4 3 2 1 0
+```
+
+Alternative board:
+
+```text
+ESP32-C3 Super Mini: 5V GND 3.3V 4 3 2 1 20 10 9 8 7 6 5
+```
+
+To change the board:
+
+```sh
+. /opt/esp-idf/export.sh
+idf.py menuconfig
+```
+
+Then select:
+
+```text
+Fallout Badge -> ESP32-C3 devboard pinout
+```
+
+The default can also be changed in `sdkconfig.defaults`.
+
+Logical signal order across the 11 GPIO positions:
+
+```text
+MID3 MID1 MID2 SID1 SID2 SID3 RLED SLED IDUp IDDown Action
+```
+
 ## Hardware Bring-Up Notes
 
 - Buttons are currently configured as active-low with internal pull-ups.
-- GPIO8 and GPIO9 are boot strapping sensitive on ESP32-C3. Test reset behavior while holding IDUp and IDDown.
-- GPIO20/GPIO21 are used for SLED/RLED, so serial logging should stay on USB CDC rather than UART.
+- Some selected GPIOs are boot strapping sensitive depending on the board. Test reset behavior while holding each button.
+- UART-labelled pins may be used for badge signals depending on the selected pinout, so serial logging should stay on USB Serial/JTAG rather than UART.
 - The current charlieplex physical LED order defaults to `{0, 1, 2, 3, 4, 5}` for both groups and should be adjusted after testing the board.
