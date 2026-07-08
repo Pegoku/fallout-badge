@@ -30,6 +30,10 @@ static const char *TAG = "fallout_badge";
 #define CALL_INPUT_RAW_ARG_START 1U
 #define CALL_INPUT_RAW_ARG_STOP 2U
 
+#define RELIABLE_PACKET_COUNT 6U
+#define RELIABLE_RETRY_MS 90U
+#define RELIABLE_MAX_ATTEMPTS 6U
+
 typedef enum {
     APP_MODE_MY_ID_INPUT = 0,
     APP_MODE_ID_PROBE_WAIT,
@@ -39,6 +43,13 @@ typedef enum {
     APP_MODE_OUTGOING_WAIT,
     APP_MODE_CALL_ACTIVE,
 } app_mode_t;
+
+typedef struct {
+    bool active;
+    badge_packet_t packet;
+    uint8_t attempts;
+    uint32_t next_retry_ms;
+} reliable_packet_t;
 
 typedef struct {
     app_mode_t mode;
@@ -65,6 +76,9 @@ typedef struct {
     uint32_t receive_raw_until_ms;
     uint32_t last_alert_toggle_ms;
     uint32_t next_input_repeat_ms;
+    uint16_t last_packet_seq_by_id[64];
+    uint16_t last_call_input_seq_by_id[64];
+    reliable_packet_t reliable_packets[RELIABLE_PACKET_COUNT];
 } app_state_t;
 
 static app_state_t s_app;
@@ -138,6 +152,13 @@ static void stop_input_repeat(void)
 {
     s_app.input_repeat_active = false;
     s_app.input_repeat_count = 0;
+}
+
+static void clear_reliable_packets(void)
+{
+    for (uint8_t i = 0; i < RELIABLE_PACKET_COUNT; i++) {
+        s_app.reliable_packets[i].active = false;
+    }
 }
 
 static void show_selected_my_id(void)
@@ -221,6 +242,7 @@ static void enter_mode(app_mode_t mode, uint32_t now)
     if (mode != APP_MODE_CALL_ACTIVE) {
         s_app.send_symbol_until_ms = 0;
         s_app.receive_raw_until_ms = 0;
+        clear_reliable_packets();
     }
 
     switch (mode) {
@@ -258,6 +280,7 @@ static void enter_mode(app_mode_t mode, uint32_t now)
         break;
     case APP_MODE_CALL_ACTIVE:
         refresh_call_activity(now);
+        s_app.last_call_input_seq_by_id[s_app.active_peer_id] = 0;
         badge_display_set_my_id(s_app.my_id, false);
         badge_display_set_target_id(s_app.active_peer_id, false);
         badge_display_set_send_led(false);
@@ -318,36 +341,146 @@ static void show_receive_symbol(uint32_t now, uint16_t duration_ms)
     badge_display_set_receive_led(true);
 }
 
-static void send_realtime(uint8_t dst_id, badge_packet_type_t type,
-                          uint16_t duration_ms)
+static bool packet_needs_ack(badge_packet_type_t type)
 {
-    if (badge_comms_send(s_app.my_id, dst_id, type, 0, duration_ms) == ESP_OK) {
-        badge_display_pulse_send();
-        refresh_call_activity(now_ms());
-        ESP_LOGI(TAG, "tx %s dst=%u duration=%u", badge_packet_type_name(type),
-                 (unsigned)dst_id, (unsigned)duration_ms);
-    } else {
-        ESP_LOGW(TAG, "tx failed %s dst=%u", badge_packet_type_name(type),
-                 (unsigned)dst_id);
+    return type == BADGE_PACKET_CALL_INPUT_RAW ||
+           type == BADGE_PACKET_CALL_INPUT_SHORT ||
+           type == BADGE_PACKET_CALL_INPUT_LONG;
+}
+
+static reliable_packet_t *alloc_reliable_slot(void)
+{
+    reliable_packet_t *oldest = &s_app.reliable_packets[0];
+
+    for (uint8_t i = 0; i < RELIABLE_PACKET_COUNT; i++) {
+        reliable_packet_t *slot = &s_app.reliable_packets[i];
+        if (!slot->active) {
+            return slot;
+        }
+        if ((int32_t)(slot->next_retry_ms - oldest->next_retry_ms) < 0) {
+            oldest = slot;
+        }
+    }
+
+    ESP_LOGW(TAG, "reliable queue full, replacing seq=%u",
+             (unsigned)oldest->packet.seq);
+    return oldest;
+}
+
+static void track_reliable_packet(const badge_packet_t *packet, uint32_t now)
+{
+    reliable_packet_t *slot = alloc_reliable_slot();
+    *slot = (reliable_packet_t){
+        .active = true,
+        .packet = *packet,
+        .attempts = 1,
+        .next_retry_ms = now + RELIABLE_RETRY_MS,
+    };
+}
+
+static void cancel_reliable_packet(uint8_t dst_id, badge_packet_type_t type,
+                                   uint8_t arg)
+{
+    for (uint8_t i = 0; i < RELIABLE_PACKET_COUNT; i++) {
+        reliable_packet_t *slot = &s_app.reliable_packets[i];
+        if (slot->active &&
+            slot->packet.dst_id == dst_id &&
+            slot->packet.type == type &&
+            slot->packet.arg == arg) {
+            ESP_LOGI(TAG, "cancel reliable %s dst=%u seq=%u arg=%u",
+                     badge_packet_type_name(type), (unsigned)dst_id,
+                     (unsigned)slot->packet.seq, (unsigned)arg);
+            slot->active = false;
+        }
     }
 }
 
-static void send_realtime_arg(uint8_t dst_id, badge_packet_type_t type,
-                              uint8_t arg, uint16_t duration_ms,
-                              bool pulse_indicator)
+static esp_err_t send_reliable_packet(badge_packet_t *packet, bool pulse_indicator)
 {
-    if (badge_comms_send(s_app.my_id, dst_id, type, arg, duration_ms) == ESP_OK) {
+    const uint32_t now = now_ms();
+    esp_err_t err = badge_comms_send_packet(packet);
+    if (err == ESP_OK) {
         if (pulse_indicator) {
             badge_display_pulse_send();
         }
-        refresh_call_activity(now_ms());
-        ESP_LOGI(TAG, "tx %s dst=%u arg=%u duration=%u",
-                 badge_packet_type_name(type), (unsigned)dst_id, (unsigned)arg,
-                 (unsigned)duration_ms);
+        refresh_call_activity(now);
+        track_reliable_packet(packet, now);
+        ESP_LOGI(TAG, "tx reliable %s dst=%u seq=%u arg=%u duration=%u",
+                 badge_packet_type_name(packet->type), (unsigned)packet->dst_id,
+                 (unsigned)packet->seq, (unsigned)packet->arg,
+                 (unsigned)packet->duration_ms);
     } else {
-        ESP_LOGW(TAG, "tx failed %s dst=%u", badge_packet_type_name(type),
-                 (unsigned)dst_id);
+        ESP_LOGW(TAG, "tx reliable failed %s dst=%u",
+                 badge_packet_type_name(packet->type), (unsigned)packet->dst_id);
     }
+    return err;
+}
+
+static void send_reliable_input(uint8_t dst_id, badge_packet_type_t type,
+                                uint8_t arg, uint16_t duration_ms,
+                                bool pulse_indicator)
+{
+    badge_packet_t packet;
+    esp_err_t err = badge_comms_make_packet(s_app.my_id, dst_id, type, arg,
+                                            duration_ms, &packet);
+    if (err == ESP_OK) {
+        (void)send_reliable_packet(&packet, pulse_indicator);
+    }
+}
+
+static void send_ack(const badge_packet_t *packet)
+{
+    (void)badge_comms_send(s_app.my_id, packet->src_id, BADGE_PACKET_ACK,
+                           packet->type, packet->seq);
+    ESP_LOGI(TAG, "tx ACK dst=%u seq=%u type=%s", (unsigned)packet->src_id,
+             (unsigned)packet->seq, badge_packet_type_name(packet->type));
+}
+
+static void handle_ack(const badge_packet_t *packet)
+{
+    for (uint8_t i = 0; i < RELIABLE_PACKET_COUNT; i++) {
+        reliable_packet_t *slot = &s_app.reliable_packets[i];
+        if (slot->active &&
+            slot->packet.dst_id == packet->src_id &&
+            slot->packet.seq == packet->duration_ms &&
+            slot->packet.type == packet->arg) {
+            ESP_LOGI(TAG, "rx ACK src=%u seq=%u type=%s attempts=%u",
+                     (unsigned)packet->src_id, (unsigned)slot->packet.seq,
+                     badge_packet_type_name(slot->packet.type),
+                     (unsigned)slot->attempts);
+            slot->active = false;
+            return;
+        }
+    }
+}
+
+static bool call_input_is_duplicate(const badge_packet_t *packet)
+{
+    if (!packet_needs_ack((badge_packet_type_t)packet->type) ||
+        packet->src_id > 63U) {
+        return false;
+    }
+
+    if (s_app.last_call_input_seq_by_id[packet->src_id] == packet->seq) {
+        return true;
+    }
+
+    s_app.last_call_input_seq_by_id[packet->src_id] = packet->seq;
+    return false;
+}
+
+static bool packet_is_duplicate(const badge_packet_t *packet)
+{
+    if (packet->src_id == 0U || packet->src_id > 63U) {
+        return false;
+    }
+
+    if (s_app.last_packet_seq_by_id[packet->src_id] == packet->seq) {
+        return true;
+    }
+
+    s_app.last_packet_seq_by_id[packet->src_id] = packet->seq;
+    return false;
 }
 
 static void start_id_probe(uint8_t candidate_id, bool auto_assigning, uint32_t now)
@@ -394,6 +527,16 @@ static void handle_packet(const badge_packet_t *packet, uint32_t now)
              badge_packet_type_name(packet->type), (unsigned)packet->src_id,
              (unsigned)packet->dst_id, (unsigned)packet->arg,
              (unsigned)packet->duration_ms);
+
+    if (packet->type == BADGE_PACKET_ACK) {
+        handle_ack(packet);
+        return;
+    }
+
+    if (!packet_needs_ack((badge_packet_type_t)packet->type) &&
+        packet_is_duplicate(packet)) {
+        return;
+    }
 
     if (packet->type == BADGE_PACKET_ID_PROBE) {
         if (s_app.my_id != 0U && packet->arg == s_app.my_id) {
@@ -485,6 +628,10 @@ static void handle_packet(const badge_packet_t *packet, uint32_t now)
     case BADGE_PACKET_CALL_INPUT_RAW:
         if (s_app.mode == APP_MODE_CALL_ACTIVE &&
             packet->src_id == s_app.active_peer_id) {
+            send_ack(packet);
+            if (call_input_is_duplicate(packet)) {
+                break;
+            }
             refresh_call_activity(now);
             if (packet->arg == CALL_INPUT_RAW_ARG_START) {
                 s_app.receive_raw_until_ms = 0;
@@ -506,6 +653,10 @@ static void handle_packet(const badge_packet_t *packet, uint32_t now)
     case BADGE_PACKET_CALL_INPUT_LONG:
         if (s_app.mode == APP_MODE_CALL_ACTIVE &&
             packet->src_id == s_app.active_peer_id) {
+            send_ack(packet);
+            if (call_input_is_duplicate(packet)) {
+                break;
+            }
             uint16_t duration = packet->duration_ms;
             if (duration == 0U) {
                 duration = call_input_symbol_duration(
@@ -636,8 +787,9 @@ static void handle_button_event(const badge_button_event_t *event, uint32_t now)
                 s_app.action_press_started_ms = now;
                 refresh_call_activity(now);
                 badge_display_set_send_led(true);
-                send_realtime_arg(s_app.active_peer_id, BADGE_PACKET_CALL_INPUT_RAW,
-                                  CALL_INPUT_RAW_ARG_START, 0, false);
+                send_reliable_input(s_app.active_peer_id,
+                                    BADGE_PACKET_CALL_INPUT_RAW,
+                                    CALL_INPUT_RAW_ARG_START, 0, false);
             } else if (event->type == BADGE_BUTTON_EVENT_RELEASE &&
                        s_app.action_pressed) {
                 uint32_t duration = event->duration_ms;
@@ -647,9 +799,13 @@ static void handle_button_event(const badge_button_event_t *event, uint32_t now)
                 s_app.action_pressed = false;
                 badge_display_set_send_led(false);
                 refresh_call_activity(now);
-                send_realtime_arg(s_app.active_peer_id, BADGE_PACKET_CALL_INPUT_RAW,
-                                  CALL_INPUT_RAW_ARG_STOP, (uint16_t)duration,
-                                  false);
+                cancel_reliable_packet(s_app.active_peer_id,
+                                       BADGE_PACKET_CALL_INPUT_RAW,
+                                       CALL_INPUT_RAW_ARG_START);
+                send_reliable_input(s_app.active_peer_id,
+                                    BADGE_PACKET_CALL_INPUT_RAW,
+                                    CALL_INPUT_RAW_ARG_STOP, (uint16_t)duration,
+                                    false);
             }
         } else if (event->type == BADGE_BUTTON_EVENT_SHORT &&
                    event->button == BADGE_BUTTON_DOWN) {
@@ -657,16 +813,18 @@ static void handle_button_event(const badge_button_event_t *event, uint32_t now)
                 call_input_symbol_duration(BADGE_PACKET_CALL_INPUT_SHORT);
             refresh_call_activity(now);
             show_send_symbol(now, duration);
-            send_realtime(s_app.active_peer_id, BADGE_PACKET_CALL_INPUT_SHORT,
-                          duration);
+            send_reliable_input(s_app.active_peer_id,
+                                BADGE_PACKET_CALL_INPUT_SHORT, 0, duration,
+                                false);
         } else if (event->type == BADGE_BUTTON_EVENT_SHORT &&
                    event->button == BADGE_BUTTON_UP) {
             const uint16_t duration =
                 call_input_symbol_duration(BADGE_PACKET_CALL_INPUT_LONG);
             refresh_call_activity(now);
             show_send_symbol(now, duration);
-            send_realtime(s_app.active_peer_id, BADGE_PACKET_CALL_INPUT_LONG,
-                          duration);
+            send_reliable_input(s_app.active_peer_id,
+                                BADGE_PACKET_CALL_INPUT_LONG, 0, duration,
+                                false);
         }
         break;
 
@@ -765,6 +923,39 @@ static void update_input_repeat(uint32_t now)
     }
 }
 
+static void update_reliable_retries(uint32_t now)
+{
+    for (uint8_t i = 0; i < RELIABLE_PACKET_COUNT; i++) {
+        reliable_packet_t *slot = &s_app.reliable_packets[i];
+        if (!slot->active || !deadline_reached(now, slot->next_retry_ms)) {
+            continue;
+        }
+
+        if (slot->attempts >= RELIABLE_MAX_ATTEMPTS) {
+            ESP_LOGW(TAG, "reliable packet dropped: type=%s dst=%u seq=%u",
+                     badge_packet_type_name(slot->packet.type),
+                     (unsigned)slot->packet.dst_id, (unsigned)slot->packet.seq);
+            slot->active = false;
+            continue;
+        }
+
+        esp_err_t err = badge_comms_send_packet(&slot->packet);
+        if (err == ESP_OK) {
+            slot->attempts++;
+            slot->next_retry_ms = now + RELIABLE_RETRY_MS;
+            ESP_LOGI(TAG, "retry %s dst=%u seq=%u attempt=%u",
+                     badge_packet_type_name(slot->packet.type),
+                     (unsigned)slot->packet.dst_id, (unsigned)slot->packet.seq,
+                     (unsigned)slot->attempts);
+        } else {
+            ESP_LOGW(TAG, "retry failed %s dst=%u seq=%u",
+                     badge_packet_type_name(slot->packet.type),
+                     (unsigned)slot->packet.dst_id, (unsigned)slot->packet.seq);
+            slot->next_retry_ms = now + RELIABLE_RETRY_MS;
+        }
+    }
+}
+
 void app_main(void)
 {
     ESP_ERROR_CHECK(badge_storage_init());
@@ -815,6 +1006,7 @@ void app_main(void)
         update_timeouts(now);
         update_alerts(now);
         update_input_repeat(now);
+        update_reliable_retries(now);
 
         vTaskDelay(delay_ticks_at_least_one(MAIN_LOOP_MS));
     }

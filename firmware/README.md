@@ -121,6 +121,7 @@ Controls:
 - Active call: holding `Action` live-streams the raw input; SLED turns on while pressed and the receiver's RLED mirrors it until release.
 - Active call: short-press `IDDown` sends a short visible symbol.
 - Active call: short-press `IDUp` sends a long visible symbol.
+- Active-call input packets are acknowledged and retried if the ACK is missed.
 
 Display behavior:
 

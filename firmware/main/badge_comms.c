@@ -19,7 +19,6 @@ static const uint8_t CONTROL_REPEAT_COUNT = 3U;
 
 static QueueHandle_t s_rx_queue;
 static uint16_t s_next_seq = 1;
-static uint16_t s_last_seq_by_id[64];
 
 static esp_err_t send_packet(const badge_packet_t *packet)
 {
@@ -43,13 +42,6 @@ static void receive_callback(const esp_now_recv_info_t *recv_info,
         packet.src_id > 63U ||
         packet.dst_id > 63U) {
         return;
-    }
-
-    if (packet.src_id != 0U && s_last_seq_by_id[packet.src_id] == packet.seq) {
-        return;
-    }
-    if (packet.src_id != 0U) {
-        s_last_seq_by_id[packet.src_id] = packet.seq;
     }
 
     (void)xQueueSend(s_rx_queue, &packet, 0);
@@ -103,11 +95,26 @@ esp_err_t badge_comms_send(uint8_t src_id, uint8_t dst_id,
                            badge_packet_type_t type, uint8_t arg,
                            uint16_t duration_ms)
 {
+    badge_packet_t packet;
+    ESP_RETURN_ON_ERROR(badge_comms_make_packet(src_id, dst_id, type, arg,
+                                                duration_ms, &packet),
+                        TAG, "packet create failed");
+    return badge_comms_send_packet(&packet);
+}
+
+esp_err_t badge_comms_make_packet(uint8_t src_id, uint8_t dst_id,
+                                  badge_packet_type_t type, uint8_t arg,
+                                  uint16_t duration_ms,
+                                  badge_packet_t *packet)
+{
     if (src_id > 63U || dst_id > 63U) {
         return ESP_ERR_INVALID_ARG;
     }
+    if (packet == NULL) {
+        return ESP_ERR_INVALID_ARG;
+    }
 
-    badge_packet_t packet = {
+    *packet = (badge_packet_t){
         .magic = PACKET_MAGIC,
         .version = BADGE_PROTOCOL_VERSION,
         .type = (uint8_t)type,
@@ -118,7 +125,20 @@ esp_err_t badge_comms_send(uint8_t src_id, uint8_t dst_id,
         .duration_ms = duration_ms,
     };
 
-    return send_packet(&packet);
+    return ESP_OK;
+}
+
+esp_err_t badge_comms_send_packet(const badge_packet_t *packet)
+{
+    if (packet == NULL ||
+        packet->magic != PACKET_MAGIC ||
+        packet->version != BADGE_PROTOCOL_VERSION ||
+        packet->src_id > 63U ||
+        packet->dst_id > 63U) {
+        return ESP_ERR_INVALID_ARG;
+    }
+
+    return send_packet(packet);
 }
 
 esp_err_t badge_comms_send_control(uint8_t src_id, uint8_t dst_id,
@@ -189,6 +209,8 @@ const char *badge_packet_type_name(uint8_t type)
         return "CALL_INPUT_LONG";
     case BADGE_PACKET_PING:
         return "PING";
+    case BADGE_PACKET_ACK:
+        return "ACK";
     default:
         return "UNKNOWN";
     }
