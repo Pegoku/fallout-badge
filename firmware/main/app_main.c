@@ -23,6 +23,8 @@ static const char *TAG = "fallout_badge";
 #define ALERT_BLINK_MS 300U
 #define RAW_DURATION_MAX_MS 5000U
 #define INPUT_REPEAT_START_MS 800U
+#define CALL_INPUT_SHORT_MS 220U
+#define CALL_INPUT_LONG_MS 650U
 
 typedef enum {
     APP_MODE_MY_ID_INPUT = 0,
@@ -55,6 +57,7 @@ typedef struct {
     uint32_t last_activity_ms;
     uint32_t call_deadline_ms;
     uint32_t action_press_started_ms;
+    uint32_t send_symbol_until_ms;
     uint32_t receive_raw_until_ms;
     uint32_t last_alert_toggle_ms;
     uint32_t next_input_repeat_ms;
@@ -211,6 +214,10 @@ static void enter_mode(app_mode_t mode, uint32_t now)
     s_app.call_alert_on = false;
     s_app.last_alert_toggle_ms = now;
     stop_input_repeat();
+    if (mode != APP_MODE_CALL_ACTIVE) {
+        s_app.send_symbol_until_ms = 0;
+        s_app.receive_raw_until_ms = 0;
+    }
 
     switch (mode) {
     case APP_MODE_MY_ID_INPUT:
@@ -287,6 +294,24 @@ static void end_call(uint32_t now, const char *reason)
              (unsigned)s_app.active_peer_id);
     send_control(s_app.active_peer_id, BADGE_PACKET_CALL_END, 0);
     enter_mode(APP_MODE_MAIN, now);
+}
+
+static uint16_t call_input_symbol_duration(badge_packet_type_t type)
+{
+    return type == BADGE_PACKET_CALL_INPUT_LONG ? CALL_INPUT_LONG_MS :
+                                                  CALL_INPUT_SHORT_MS;
+}
+
+static void show_send_symbol(uint32_t now, uint16_t duration_ms)
+{
+    s_app.send_symbol_until_ms = now + duration_ms;
+    badge_display_set_send_led(true);
+}
+
+static void show_receive_symbol(uint32_t now, uint16_t duration_ms)
+{
+    s_app.receive_raw_until_ms = now + duration_ms;
+    badge_display_set_receive_led(true);
 }
 
 static void send_realtime(uint8_t dst_id, badge_packet_type_t type,
@@ -442,9 +467,8 @@ static void handle_packet(const badge_packet_t *packet, uint32_t now)
             if (duration > RAW_DURATION_MAX_MS) {
                 duration = RAW_DURATION_MAX_MS;
             }
-            s_app.receive_raw_until_ms = now + duration;
             refresh_call_activity(now);
-            badge_display_set_receive_led(true);
+            show_receive_symbol(now, (uint16_t)duration);
         }
         break;
 
@@ -452,8 +476,13 @@ static void handle_packet(const badge_packet_t *packet, uint32_t now)
     case BADGE_PACKET_CALL_INPUT_LONG:
         if (s_app.mode == APP_MODE_CALL_ACTIVE &&
             packet->src_id == s_app.active_peer_id) {
+            uint16_t duration = packet->duration_ms;
+            if (duration == 0U) {
+                duration = call_input_symbol_duration(
+                    (badge_packet_type_t)packet->type);
+            }
             refresh_call_activity(now);
-            badge_display_pulse_receive();
+            show_receive_symbol(now, duration);
         }
         break;
 
@@ -591,12 +620,20 @@ static void handle_button_event(const badge_button_event_t *event, uint32_t now)
             }
         } else if (event->type == BADGE_BUTTON_EVENT_SHORT &&
                    event->button == BADGE_BUTTON_DOWN) {
+            const uint16_t duration =
+                call_input_symbol_duration(BADGE_PACKET_CALL_INPUT_SHORT);
             refresh_call_activity(now);
-            send_realtime(s_app.active_peer_id, BADGE_PACKET_CALL_INPUT_SHORT, 0);
+            show_send_symbol(now, duration);
+            send_realtime(s_app.active_peer_id, BADGE_PACKET_CALL_INPUT_SHORT,
+                          duration);
         } else if (event->type == BADGE_BUTTON_EVENT_SHORT &&
                    event->button == BADGE_BUTTON_UP) {
+            const uint16_t duration =
+                call_input_symbol_duration(BADGE_PACKET_CALL_INPUT_LONG);
             refresh_call_activity(now);
-            send_realtime(s_app.active_peer_id, BADGE_PACKET_CALL_INPUT_LONG, 0);
+            show_send_symbol(now, duration);
+            send_realtime(s_app.active_peer_id, BADGE_PACKET_CALL_INPUT_LONG,
+                          duration);
         }
         break;
 
@@ -644,6 +681,14 @@ static void update_timeouts(uint32_t now)
                  (unsigned long)now, (unsigned long)s_app.last_activity_ms,
                  (unsigned long)s_app.call_deadline_ms);
         end_call(now, "inactivity_timeout");
+    }
+
+    if (s_app.send_symbol_until_ms != 0U &&
+        deadline_reached(now, s_app.send_symbol_until_ms)) {
+        s_app.send_symbol_until_ms = 0;
+        if (!s_app.action_pressed && !s_app.call_alert_on) {
+            badge_display_set_send_led(false);
+        }
     }
 
     if (s_app.receive_raw_until_ms != 0U &&

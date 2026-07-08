@@ -119,8 +119,8 @@ Controls:
 - Incoming call: long-press `Action` rejects.
 - Outgoing wait or active call: hold `IDUp + IDDown` for 3 seconds to end/cancel.
 - Active call: press/release `Action` sends a raw duration input.
-- Active call: short-press `IDDown` sends a short input.
-- Active call: short-press `IDUp` sends a long input.
+- Active call: short-press `IDDown` sends a short visible symbol.
+- Active call: short-press `IDUp` sends a long visible symbol.
 
 Display behavior:
 
@@ -128,7 +128,8 @@ Display behavior:
 - Send ID LEDs show the selected target, incoming caller, or active peer.
 - The editable LED group blinks in My ID input and Who To Call modes.
 - SLED pulses on local sends and stays on while holding `Action` in an active call.
-- RLED pulses on received traffic and mirrors received raw-duration inputs.
+- SLED/RLED hold for readable short and long symbol durations during active-call inputs.
+- RLED mirrors received raw-duration inputs.
 - Incoming calls blink SLED and RLED together.
 
 ## Hardware Notes
