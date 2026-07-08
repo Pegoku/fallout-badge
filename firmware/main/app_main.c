@@ -22,6 +22,7 @@ static const char *TAG = "fallout_badge";
 #define CALL_INACTIVITY_TIMEOUT_MS 15000U
 #define ALERT_BLINK_MS 300U
 #define RAW_DURATION_MAX_MS 5000U
+#define INPUT_REPEAT_START_MS 800U
 
 typedef enum {
     APP_MODE_MY_ID_INPUT = 0,
@@ -45,6 +46,9 @@ typedef struct {
     bool probe_conflict_seen;
     bool action_pressed;
     bool call_alert_on;
+    bool input_repeat_active;
+    badge_button_id_t input_repeat_button;
+    uint8_t input_repeat_count;
     uint32_t mode_started_ms;
     uint32_t probe_deadline_ms;
     uint32_t next_auto_retry_ms;
@@ -52,6 +56,7 @@ typedef struct {
     uint32_t action_press_started_ms;
     uint32_t receive_raw_until_ms;
     uint32_t last_alert_toggle_ms;
+    uint32_t next_input_repeat_ms;
 } app_state_t;
 
 static app_state_t s_app;
@@ -92,6 +97,97 @@ static uint8_t random_badge_id(void)
     return (uint8_t)((esp_random() % 63U) + 1U);
 }
 
+static uint32_t input_repeat_interval_ms(uint8_t repeat_count)
+{
+    if (repeat_count < 4U) {
+        return 700U;
+    }
+    if (repeat_count < 10U) {
+        return 500U;
+    }
+    if (repeat_count < 18U) {
+        return 320U;
+    }
+    if (repeat_count < 30U) {
+        return 220U;
+    }
+    return 140U;
+}
+
+static bool mode_supports_input_repeat(app_mode_t mode)
+{
+    return mode == APP_MODE_MY_ID_INPUT || mode == APP_MODE_WHO_TO_CALL;
+}
+
+static void stop_input_repeat(void)
+{
+    s_app.input_repeat_active = false;
+    s_app.input_repeat_count = 0;
+}
+
+static void show_selected_my_id(void)
+{
+    badge_display_set_my_id(s_app.selected_my_id == 0U ? 0x3fU :
+                            s_app.selected_my_id, true);
+}
+
+static void show_target_id(void)
+{
+    badge_display_set_target_id(s_app.target_id, true);
+}
+
+static void change_selected_my_id(badge_button_id_t button)
+{
+    if (button == BADGE_BUTTON_UP) {
+        s_app.selected_my_id = wrap_id_up(s_app.selected_my_id, true);
+    } else if (button == BADGE_BUTTON_DOWN) {
+        s_app.selected_my_id = wrap_id_down(s_app.selected_my_id, true);
+    }
+    show_selected_my_id();
+}
+
+static void change_target_id(badge_button_id_t button)
+{
+    if (button == BADGE_BUTTON_UP) {
+        do {
+            s_app.target_id = wrap_id_up(s_app.target_id, false);
+        } while (s_app.target_id == s_app.my_id);
+    } else if (button == BADGE_BUTTON_DOWN) {
+        do {
+            s_app.target_id = wrap_id_down(s_app.target_id, false);
+        } while (s_app.target_id == s_app.my_id);
+    }
+    show_target_id();
+}
+
+static void repeat_input_step(uint32_t now)
+{
+    if (s_app.mode == APP_MODE_MY_ID_INPUT) {
+        change_selected_my_id(s_app.input_repeat_button);
+    } else if (s_app.mode == APP_MODE_WHO_TO_CALL) {
+        change_target_id(s_app.input_repeat_button);
+    }
+
+    if (s_app.input_repeat_count < UINT8_MAX) {
+        s_app.input_repeat_count++;
+    }
+    s_app.next_input_repeat_ms =
+        now + input_repeat_interval_ms(s_app.input_repeat_count);
+}
+
+static void start_input_repeat(badge_button_id_t button, uint32_t now)
+{
+    if (!mode_supports_input_repeat(s_app.mode) ||
+        (button != BADGE_BUTTON_UP && button != BADGE_BUTTON_DOWN)) {
+        return;
+    }
+
+    s_app.input_repeat_active = true;
+    s_app.input_repeat_button = button;
+    s_app.input_repeat_count = 0;
+    repeat_input_step(now);
+}
+
 static void display_idle(void)
 {
     badge_display_set_my_id(s_app.my_id, false);
@@ -106,11 +202,11 @@ static void enter_mode(app_mode_t mode, uint32_t now)
     s_app.mode_started_ms = now;
     s_app.call_alert_on = false;
     s_app.last_alert_toggle_ms = now;
+    stop_input_repeat();
 
     switch (mode) {
     case APP_MODE_MY_ID_INPUT:
-        badge_display_set_my_id(s_app.selected_my_id,
-                                s_app.selected_my_id == 0U);
+        show_selected_my_id();
         badge_display_set_target_id(0, false);
         badge_display_set_send_led(false);
         badge_display_set_receive_led(false);
@@ -127,7 +223,7 @@ static void enter_mode(app_mode_t mode, uint32_t now)
             s_app.target_id = s_app.my_id == 1U ? 2U : 1U;
         }
         badge_display_set_my_id(s_app.my_id, false);
-        badge_display_set_target_id(s_app.target_id, false);
+        show_target_id();
         badge_display_set_send_led(false);
         badge_display_set_receive_led(false);
         break;
@@ -368,15 +464,19 @@ static void handle_button_event(const badge_button_event_t *event, uint32_t now)
 
     switch (s_app.mode) {
     case APP_MODE_MY_ID_INPUT:
+        if (event->type == BADGE_BUTTON_EVENT_RELEASE &&
+            event->button == s_app.input_repeat_button) {
+            stop_input_repeat();
+        } else if (event->type == BADGE_BUTTON_EVENT_LONG &&
+                   (event->button == BADGE_BUTTON_UP ||
+                    event->button == BADGE_BUTTON_DOWN)) {
+            start_input_repeat(event->button, now);
+        }
         if (event->type == BADGE_BUTTON_EVENT_SHORT) {
             if (event->button == BADGE_BUTTON_UP) {
-                s_app.selected_my_id = wrap_id_up(s_app.selected_my_id, true);
-                badge_display_set_my_id(s_app.selected_my_id,
-                                        s_app.selected_my_id == 0U);
+                change_selected_my_id(event->button);
             } else if (event->button == BADGE_BUTTON_DOWN) {
-                s_app.selected_my_id = wrap_id_down(s_app.selected_my_id, true);
-                badge_display_set_my_id(s_app.selected_my_id,
-                                        s_app.selected_my_id == 0U);
+                change_selected_my_id(event->button);
             } else if (event->button == BADGE_BUTTON_ACTION) {
                 if (s_app.selected_my_id == 0U) {
                     start_id_probe(random_badge_id(), true, now);
@@ -396,17 +496,19 @@ static void handle_button_event(const badge_button_event_t *event, uint32_t now)
         break;
 
     case APP_MODE_WHO_TO_CALL:
+        if (event->type == BADGE_BUTTON_EVENT_RELEASE &&
+            event->button == s_app.input_repeat_button) {
+            stop_input_repeat();
+        } else if (event->type == BADGE_BUTTON_EVENT_LONG &&
+                   (event->button == BADGE_BUTTON_UP ||
+                    event->button == BADGE_BUTTON_DOWN)) {
+            start_input_repeat(event->button, now);
+        }
         if (event->type == BADGE_BUTTON_EVENT_SHORT) {
             if (event->button == BADGE_BUTTON_UP) {
-                do {
-                    s_app.target_id = wrap_id_up(s_app.target_id, false);
-                } while (s_app.target_id == s_app.my_id);
-                badge_display_set_target_id(s_app.target_id, false);
+                change_target_id(event->button);
             } else if (event->button == BADGE_BUTTON_DOWN) {
-                do {
-                    s_app.target_id = wrap_id_down(s_app.target_id, false);
-                } while (s_app.target_id == s_app.my_id);
-                badge_display_set_target_id(s_app.target_id, false);
+                change_target_id(event->button);
             } else if (event->button == BADGE_BUTTON_ACTION) {
                 if (s_app.target_id == s_app.my_id || s_app.target_id == 0U) {
                     badge_display_play_error_dance();
@@ -539,6 +641,22 @@ static void update_alerts(uint32_t now)
     badge_display_set_receive_led(s_app.call_alert_on);
 }
 
+static void update_input_repeat(uint32_t now)
+{
+    if (!s_app.input_repeat_active) {
+        return;
+    }
+
+    if (!mode_supports_input_repeat(s_app.mode)) {
+        stop_input_repeat();
+        return;
+    }
+
+    if (now >= s_app.next_input_repeat_ms) {
+        repeat_input_step(now);
+    }
+}
+
 void app_main(void)
 {
     ESP_ERROR_CHECK(badge_storage_init());
@@ -588,6 +706,7 @@ void app_main(void)
 
         update_timeouts(now);
         update_alerts(now);
+        update_input_repeat(now);
 
         vTaskDelay(delay_ticks_at_least_one(MAIN_LOOP_MS));
     }

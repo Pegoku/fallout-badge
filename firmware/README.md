@@ -107,10 +107,12 @@ After flashing:
 Controls:
 
 - My ID input: `IDUp`/`IDDown` changes the local ID, including `0`.
+- My ID input: hold `IDUp` or `IDDown` for 0.8 seconds to auto-repeat with acceleration.
 - My ID input: `Action` validates and saves the selected ID. Selecting `0` runs automatic assignment.
 - Main: `IDUp` or `IDDown` enters Who To Call mode.
 - Main or Who To Call: hold `IDUp + IDDown` for 3 seconds to re-enter My ID input.
 - Who To Call: `IDUp`/`IDDown` changes the target ID.
+- Who To Call: hold `IDUp` or `IDDown` for 0.8 seconds to auto-repeat with acceleration.
 - Who To Call: `Action` sends a call request.
 - Who To Call: long-press `Action` cancels back to Main.
 - Incoming call: short-press `Action` accepts.
@@ -124,6 +126,7 @@ Display behavior:
 
 - My ID LEDs show the local badge ID.
 - Send ID LEDs show the selected target, incoming caller, or active peer.
+- The editable LED group blinks in My ID input and Who To Call modes.
 - SLED pulses on local sends and stays on while holding `Action` in an active call.
 - RLED pulses on received traffic and mirrors received raw-duration inputs.
 - Incoming calls blink SLED and RLED together.
