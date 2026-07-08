@@ -2,9 +2,9 @@
 
 Firmware for the ESP32-C3 Fallout badge.
 
-Current firmware status: hardware bring-up. It cycles every LED group,
-pulses SLED/RLED on button events, and logs button presses over USB
-Serial/JTAG.
+Current firmware status: full ESP-NOW application firmware. It stores a local
+badge ID, validates claimed IDs over ESP-NOW, selects a call target, handles
+incoming/outgoing calls, and exchanges short/long/raw call inputs.
 
 ## Requirements
 
@@ -95,18 +95,38 @@ idf.py -p /dev/ttyACM0 flash monitor
 
 Exit the monitor with `Ctrl+]`.
 
-## Bring-Up Behavior
+## Usage
 
 After flashing:
 
 - The firmware logs the selected pinout at boot.
 - The firmware logs the concrete GPIO map used for LEDs and buttons.
-- My ID LEDs are tested one at a time, then all at once.
-- Call ID LEDs are tested one at a time, then all at once.
-- SLED and RLED are tested individually and together as drive-high, drive-low, and high-Z phases.
-- Pressing `Action` pulses SLED.
-- Pressing `IDUp` or `IDDown` pulses RLED.
-- Button press, release, short, long, and `IDUp + IDDown` chord events are logged.
+- If no local ID is saved, the badge enters My ID input.
+- If a local ID is saved, the badge enters Main mode and shows it on My ID LEDs.
+
+Controls:
+
+- My ID input: `IDUp`/`IDDown` changes the local ID, including `0`.
+- My ID input: `Action` validates and saves the selected ID. Selecting `0` runs automatic assignment.
+- Main: `IDUp` or `IDDown` enters Who To Call mode.
+- Main or Who To Call: hold `IDUp + IDDown` for 3 seconds to re-enter My ID input.
+- Who To Call: `IDUp`/`IDDown` changes the target ID.
+- Who To Call: `Action` sends a call request.
+- Who To Call: long-press `Action` cancels back to Main.
+- Incoming call: short-press `Action` accepts.
+- Incoming call: long-press `Action` rejects.
+- Outgoing wait or active call: hold `IDUp + IDDown` for 3 seconds to end/cancel.
+- Active call: press/release `Action` sends a raw duration input.
+- Active call: short-press `IDDown` sends a short input.
+- Active call: short-press `IDUp` sends a long input.
+
+Display behavior:
+
+- My ID LEDs show the local badge ID.
+- Send ID LEDs show the selected target, incoming caller, or active peer.
+- SLED pulses on local sends and stays on while holding `Action` in an active call.
+- RLED pulses on received traffic and mirrors received raw-duration inputs.
+- Incoming calls blink SLED and RLED together.
 
 ## Hardware Notes
 
