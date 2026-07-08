@@ -107,7 +107,7 @@ After flashing:
 
 - Buttons are configured as active-low with internal pull-ups.
 - Some GPIOs are boot strapping pins depending on the selected board. Test reset behavior while holding each button.
-- UART-labelled pins may be used as badge signals, so console logging is configured for USB Serial/JTAG instead of UART.
+- UART-labelled XIAO pins may be used as badge signals, so console logging is configured for USB Serial/JTAG instead of UART.
 - Charlieplex LED 0 is the rightmost LED.
 - The measured My ID scan appeared as `4 3 2 5 1 0`, so My ID defaults to order `{1, 0, 2, 5, 4, 3}` in `main/badge_display.c`.
 - The measured Call ID scan appeared as `4 5 0 1 2 3`, so Call ID defaults to order `{4, 5, 2, 3, 0, 1}` in `main/badge_display.c`.

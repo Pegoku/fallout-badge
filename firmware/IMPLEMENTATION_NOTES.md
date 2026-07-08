@@ -91,7 +91,7 @@ The default can also be changed in `sdkconfig.defaults`.
 Logical signal order across the 11 GPIO positions:
 
 ```text
-Action IDDown IDUp SID3 SID2 SID1 MID2 MID1 MID3 RLED SLED
+Action IDDown IDUp SLED RLED SID3 SID2 SID1 MID2 MID1 MID3
 ```
 
 ## Hardware Bring-Up Notes

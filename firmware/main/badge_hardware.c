@@ -11,7 +11,7 @@
  *   P0 P1 P2 P3 P4 P5 P6 P7 P8 P9 P10
  *
  * Badge net order on those positions:
- *   Action IDDown IDUp SID3 SID2 SID1 MID2 MID1 MID3 RLED SLED
+ *   Action IDDown IDUp SLED RLED SID3 SID2 SID1 MID2 MID1 MID3
  */
 
 #if CONFIG_BADGE_BOARD_PINOUT_C3_SUPER_MINI
@@ -44,17 +44,17 @@
 
 const badge_pin_map_t BADGE_PINS = {
     .my_id = {
-        BADGE_GPIO_P7, /* MID1 */
-        BADGE_GPIO_P6, /* MID2 */
-        BADGE_GPIO_P8, /* MID3 */
+        BADGE_GPIO_P9,  /* MID1 */
+        BADGE_GPIO_P8,  /* MID2 */
+        BADGE_GPIO_P10, /* MID3 */
     },
     .send_id = {
-        BADGE_GPIO_P5, /* SID1 */
-        BADGE_GPIO_P4, /* SID2 */
-        BADGE_GPIO_P3, /* SID3 */
+        BADGE_GPIO_P7, /* SID1 */
+        BADGE_GPIO_P6, /* SID2 */
+        BADGE_GPIO_P5, /* SID3 */
     },
-    .receive_led = BADGE_GPIO_P9,  /* RLED */
-    .send_led = BADGE_GPIO_P10,    /* SLED */
+    .receive_led = BADGE_GPIO_P4,  /* RLED */
+    .send_led = BADGE_GPIO_P3,     /* SLED */
     .button_up = BADGE_GPIO_P2,    /* IDUp */
     .button_down = BADGE_GPIO_P1,  /* IDDown */
     .button_action = BADGE_GPIO_P0,
