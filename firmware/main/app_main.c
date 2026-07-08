@@ -53,6 +53,7 @@ typedef struct {
     uint32_t probe_deadline_ms;
     uint32_t next_auto_retry_ms;
     uint32_t last_activity_ms;
+    uint32_t call_deadline_ms;
     uint32_t action_press_started_ms;
     uint32_t receive_raw_until_ms;
     uint32_t last_alert_toggle_ms;
@@ -60,6 +61,8 @@ typedef struct {
 } app_state_t;
 
 static app_state_t s_app;
+
+static void refresh_call_activity(uint32_t now);
 
 static TickType_t delay_ticks_at_least_one(uint32_t ms)
 {
@@ -70,6 +73,11 @@ static TickType_t delay_ticks_at_least_one(uint32_t ms)
 static uint32_t now_ms(void)
 {
     return (uint32_t)(esp_timer_get_time() / 1000ULL);
+}
+
+static bool deadline_reached(uint32_t now, uint32_t deadline)
+{
+    return (int32_t)(now - deadline) >= 0;
 }
 
 static uint8_t wrap_id_up(uint8_t id, bool allow_zero)
@@ -238,7 +246,7 @@ static void enter_mode(app_mode_t mode, uint32_t now)
         badge_display_set_receive_led(false);
         break;
     case APP_MODE_CALL_ACTIVE:
-        s_app.last_activity_ms = now;
+        refresh_call_activity(now);
         badge_display_set_my_id(s_app.my_id, false);
         badge_display_set_target_id(s_app.active_peer_id, false);
         badge_display_set_send_led(false);
@@ -267,12 +275,26 @@ static void send_control(uint8_t dst_id, badge_packet_type_t type, uint8_t arg)
     }
 }
 
+static void refresh_call_activity(uint32_t now)
+{
+    s_app.last_activity_ms = now;
+    s_app.call_deadline_ms = now + CALL_INACTIVITY_TIMEOUT_MS;
+}
+
+static void end_call(uint32_t now, const char *reason)
+{
+    ESP_LOGI(TAG, "ending call: reason=%s peer=%u", reason,
+             (unsigned)s_app.active_peer_id);
+    send_control(s_app.active_peer_id, BADGE_PACKET_CALL_END, 0);
+    enter_mode(APP_MODE_MAIN, now);
+}
+
 static void send_realtime(uint8_t dst_id, badge_packet_type_t type,
                           uint16_t duration_ms)
 {
     if (badge_comms_send(s_app.my_id, dst_id, type, 0, duration_ms) == ESP_OK) {
         badge_display_pulse_send();
-        s_app.last_activity_ms = now_ms();
+        refresh_call_activity(now_ms());
         ESP_LOGI(TAG, "tx %s dst=%u duration=%u", badge_packet_type_name(type),
                  (unsigned)dst_id, (unsigned)duration_ms);
     } else {
@@ -407,6 +429,8 @@ static void handle_packet(const badge_packet_t *packet, uint32_t now)
              s_app.mode == APP_MODE_OUTGOING_WAIT) &&
             packet->src_id == s_app.active_peer_id) {
             badge_display_pulse_receive();
+            ESP_LOGI(TAG, "ending call: reason=remote_end peer=%u",
+                     (unsigned)s_app.active_peer_id);
             enter_mode(APP_MODE_MAIN, now);
         }
         break;
@@ -419,7 +443,7 @@ static void handle_packet(const badge_packet_t *packet, uint32_t now)
                 duration = RAW_DURATION_MAX_MS;
             }
             s_app.receive_raw_until_ms = now + duration;
-            s_app.last_activity_ms = now;
+            refresh_call_activity(now);
             badge_display_set_receive_led(true);
         }
         break;
@@ -428,7 +452,7 @@ static void handle_packet(const badge_packet_t *packet, uint32_t now)
     case BADGE_PACKET_CALL_INPUT_LONG:
         if (s_app.mode == APP_MODE_CALL_ACTIVE &&
             packet->src_id == s_app.active_peer_id) {
-            s_app.last_activity_ms = now;
+            refresh_call_activity(now);
             badge_display_pulse_receive();
         }
         break;
@@ -456,8 +480,7 @@ static void handle_button_event(const badge_button_event_t *event, uint32_t now)
         }
         if (s_app.mode == APP_MODE_CALL_ACTIVE ||
             s_app.mode == APP_MODE_OUTGOING_WAIT) {
-            send_control(s_app.active_peer_id, BADGE_PACKET_CALL_END, 0);
-            enter_mode(APP_MODE_MAIN, now);
+            end_call(now, "up_down_chord");
             return;
         }
     }
@@ -543,8 +566,7 @@ static void handle_button_event(const badge_button_event_t *event, uint32_t now)
     case APP_MODE_OUTGOING_WAIT:
         if (event->type == BADGE_BUTTON_EVENT_LONG &&
             event->button == BADGE_BUTTON_ACTION) {
-            send_control(s_app.active_peer_id, BADGE_PACKET_CALL_END, 0);
-            enter_mode(APP_MODE_MAIN, now);
+            end_call(now, "action_long_cancel");
         }
         break;
 
@@ -553,6 +575,7 @@ static void handle_button_event(const badge_button_event_t *event, uint32_t now)
             if (event->type == BADGE_BUTTON_EVENT_PRESS) {
                 s_app.action_pressed = true;
                 s_app.action_press_started_ms = now;
+                refresh_call_activity(now);
                 badge_display_set_send_led(true);
             } else if (event->type == BADGE_BUTTON_EVENT_RELEASE &&
                        s_app.action_pressed) {
@@ -562,14 +585,17 @@ static void handle_button_event(const badge_button_event_t *event, uint32_t now)
                 }
                 s_app.action_pressed = false;
                 badge_display_set_send_led(false);
+                refresh_call_activity(now);
                 send_realtime(s_app.active_peer_id, BADGE_PACKET_CALL_INPUT_RAW,
                               (uint16_t)duration);
             }
         } else if (event->type == BADGE_BUTTON_EVENT_SHORT &&
                    event->button == BADGE_BUTTON_DOWN) {
+            refresh_call_activity(now);
             send_realtime(s_app.active_peer_id, BADGE_PACKET_CALL_INPUT_SHORT, 0);
         } else if (event->type == BADGE_BUTTON_EVENT_SHORT &&
                    event->button == BADGE_BUTTON_UP) {
+            refresh_call_activity(now);
             send_realtime(s_app.active_peer_id, BADGE_PACKET_CALL_INPUT_LONG, 0);
         }
         break;
@@ -581,7 +607,8 @@ static void handle_button_event(const badge_button_event_t *event, uint32_t now)
 
 static void update_timeouts(uint32_t now)
 {
-    if (s_app.mode == APP_MODE_ID_PROBE_WAIT && now >= s_app.probe_deadline_ms) {
+    if (s_app.mode == APP_MODE_ID_PROBE_WAIT &&
+        deadline_reached(now, s_app.probe_deadline_ms)) {
         if (!s_app.probe_conflict_seen) {
             accept_id(s_app.probe_candidate_id, now);
             return;
@@ -589,7 +616,7 @@ static void update_timeouts(uint32_t now)
 
         badge_display_play_error_dance();
         if (s_app.auto_assigning) {
-            if (now >= s_app.next_auto_retry_ms) {
+            if (deadline_reached(now, s_app.next_auto_retry_ms)) {
                 s_app.next_auto_retry_ms = now + ID_AUTO_RETRY_MS;
                 start_id_probe(random_badge_id(), true, now);
             }
@@ -606,18 +633,21 @@ static void update_timeouts(uint32_t now)
 
     if (s_app.mode == APP_MODE_OUTGOING_WAIT &&
         (now - s_app.mode_started_ms) >= OUTGOING_CALL_TIMEOUT_MS) {
-        send_control(s_app.active_peer_id, BADGE_PACKET_CALL_END, 0);
         badge_display_play_error_dance();
-        enter_mode(APP_MODE_MAIN, now);
+        end_call(now, "outgoing_timeout");
     }
 
     if (s_app.mode == APP_MODE_CALL_ACTIVE &&
-        (now - s_app.last_activity_ms) >= CALL_INACTIVITY_TIMEOUT_MS) {
-        send_control(s_app.active_peer_id, BADGE_PACKET_CALL_END, 0);
-        enter_mode(APP_MODE_MAIN, now);
+        s_app.call_deadline_ms != 0U &&
+        deadline_reached(now, s_app.call_deadline_ms)) {
+        ESP_LOGI(TAG, "active call timeout: now=%lu last_activity=%lu deadline=%lu",
+                 (unsigned long)now, (unsigned long)s_app.last_activity_ms,
+                 (unsigned long)s_app.call_deadline_ms);
+        end_call(now, "inactivity_timeout");
     }
 
-    if (s_app.receive_raw_until_ms != 0U && now >= s_app.receive_raw_until_ms) {
+    if (s_app.receive_raw_until_ms != 0U &&
+        deadline_reached(now, s_app.receive_raw_until_ms)) {
         s_app.receive_raw_until_ms = 0;
         if (!s_app.call_alert_on) {
             badge_display_set_receive_led(false);
@@ -652,7 +682,7 @@ static void update_input_repeat(uint32_t now)
         return;
     }
 
-    if (now >= s_app.next_input_repeat_ms) {
+    if (deadline_reached(now, s_app.next_input_repeat_ms)) {
         repeat_input_step(now);
     }
 }
