@@ -99,4 +99,5 @@ MID3 MID1 MID2 SID1 SID2 SID3 RLED SLED IDUp IDDown Action
 - Buttons are currently configured as active-low with internal pull-ups.
 - Some selected GPIOs are boot strapping sensitive depending on the board. Test reset behavior while holding each button.
 - UART-labelled pins may be used for badge signals depending on the selected pinout, so serial logging should stay on USB Serial/JTAG rather than UART.
-- The current charlieplex physical LED order defaults to `{0, 1, 2, 3, 4, 5}` for both groups and should be adjusted after testing the board.
+- Charlieplex LED 0 is the rightmost LED.
+- The measured charlieplex scan order is `0 1 4 5 2 3`, so both LED groups default to order `{0, 1, 4, 5, 2, 3}`.

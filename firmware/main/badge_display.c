@@ -19,11 +19,11 @@ typedef struct {
 } charlie_group_state_t;
 
 static charlie_group_state_t s_my_id = {
-    .order = {0, 1, 2, 3, 4, 5},
+    .order = {0, 1, 4, 5, 2, 3},
 };
 
 static charlie_group_state_t s_send_id = {
-    .order = {0, 1, 2, 3, 4, 5},
+    .order = {0, 1, 4, 5, 2, 3},
 };
 
 static uint32_t s_tick_count;
