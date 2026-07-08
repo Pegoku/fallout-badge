@@ -274,7 +274,7 @@ Incoming calls during `ACTIVE`:
 Timeouts:
 
 - If the outgoing call is rejected or times out, enter `MAIN`.
-- If there is 15 seconds of inactivity in `ACTIVE`, send `CALL_END` and enter `MAIN`.
+- If there is 30 seconds of inactivity in `ACTIVE`, send `CALL_END` and enter `MAIN`.
 - The inactivity timeout should be configurable with a compile-time constant.
 
 ## Display Driver Plan
@@ -420,7 +420,7 @@ Done when:
 - Keep local SLED on for the full raw action-button press duration.
 - Keep remote RLED on for the received raw action-button duration.
 - Keep call traffic non-blocking with send/receive queues.
-- Add 15-second inactivity timeout.
+- Add 30-second inactivity timeout.
 
 Done when:
 
