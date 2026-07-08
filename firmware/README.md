@@ -109,7 +109,7 @@ After flashing:
 - Some GPIOs are boot strapping pins depending on the selected board. Test reset behavior while holding each button.
 - UART-labelled pins may be used as badge signals, so console logging is configured for USB Serial/JTAG instead of UART.
 - Charlieplex LED 0 is the rightmost LED.
-- The measured charlieplex scan order is `0 1 4 5 2 3`, so both LED groups default to order `{0, 1, 4, 5, 2, 3}` in `main/badge_display.c`.
+- The measured Call ID scan appeared as `4 5 0 1 2 3`, so both LED groups default to order `{4, 5, 2, 3, 0, 1}` in `main/badge_display.c`.
 
 ## Useful Commands
 
